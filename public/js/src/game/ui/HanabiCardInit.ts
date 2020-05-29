@@ -43,89 +43,51 @@ const borderStrokeWidthInside = borderStrokeWidth * 0.6;
 const borderOffset = 2;
 const borderOutsideColor = '#0d0d0d'; // Off-black
 
+function makeBorder(strokeColor : string) {
+  const border = new Konva.Group({
+    visible: false,
+    listening: false,
+  });
+
+  const borderOutside = new Konva.Rect({
+    width: CARD_W - borderOffset,
+    height: CARD_H - borderOffset,
+    cornerRadius: borderCornerRadius,
+    strokeWidth: borderStrokeWidth,
+    stroke: borderOutsideColor,
+    listening: false,
+  });
+
+  const borderInside = new Konva.Rect({
+    width: CARD_W - borderOffset,
+    height: CARD_H - borderOffset,
+    cornerRadius: borderCornerRadius,
+    strokeWidth: borderStrokeWidthInside,
+    stroke: strokeColor,
+    listening: false,
+  });
+
+  border.add(borderOutside);
+  border.add(borderInside);
+
+  return border;
+}
+
 export function borders(this: HanabiCard) {
   // The card will get a border when it becomes clued
-  this.cluedBorder = new Konva.Group({
-    visible: false,
-    listening: false,
-  });
-
-  const cluedBorderOutside = new Konva.Rect({
-    width: CARD_W - borderOffset,
-    height: CARD_H - borderOffset,
-    cornerRadius: borderCornerRadius,
-    strokeWidth: borderStrokeWidth,
-    stroke: borderOutsideColor,
-    listening: false,
-  });
-
-  const cluedBorderInside = new Konva.Rect({
-    width: CARD_W - borderOffset,
-    height: CARD_H - borderOffset,
-    cornerRadius: borderCornerRadius,
-    strokeWidth: borderStrokeWidthInside,
-    stroke: 'orange',
-    listening: false,
-  });
-
-  this.cluedBorder.add(cluedBorderOutside);
-  this.cluedBorder.add(cluedBorderInside);
+  this.cluedBorder = makeBorder('orange');
   this.add(this.cluedBorder);
 
+  // The card will get a border when it is critical and unclued
+  this.criticalBorder = makeBorder('red');
+  this.add(this.criticalBorder);
+
   // The card will get a special border if the player tells us that it is chop moved
-  this.chopMoveBorder = new Konva.Group({
-    visible: false,
-    listening: false,
-  });
-
-  const chopMoveBorderOutside = new Konva.Rect({
-    width: CARD_W - borderOffset,
-    height: CARD_H - borderOffset,
-    cornerRadius: borderCornerRadius,
-    strokeWidth: borderStrokeWidth,
-    stroke: borderOutsideColor,
-    listening: false,
-  });
-
-  const chopMoveBorderInside = new Konva.Rect({
-    width: CARD_W - borderOffset,
-    height: CARD_H - borderOffset,
-    cornerRadius: borderCornerRadius,
-    strokeWidth: borderStrokeWidthInside,
-    stroke: '#fffce6', // White with a yellow tint
-    listening: false,
-  });
-
-  this.chopMoveBorder.add(chopMoveBorderOutside);
-  this.chopMoveBorder.add(chopMoveBorderInside);
+  this.chopMoveBorder = makeBorder('#fffce6'); // White with a yellow tint
   this.add(this.chopMoveBorder);
 
   // The card will get a special border if the player tells us that it is finessed
-  this.finesseBorder = new Konva.Group({
-    visible: false,
-    listening: false,
-  });
-
-  const finesseBorderOutside = new Konva.Rect({
-    width: CARD_W - borderOffset,
-    height: CARD_H - borderOffset,
-    cornerRadius: borderCornerRadius,
-    strokeWidth: borderStrokeWidth,
-    stroke: borderOutsideColor,
-    listening: false,
-  });
-
-  const finesseBorderInside = new Konva.Rect({
-    width: CARD_W - borderOffset,
-    height: CARD_H - borderOffset,
-    cornerRadius: borderCornerRadius,
-    strokeWidth: borderStrokeWidthInside,
-    stroke: 'aqua',
-    listening: false,
-  });
-
-  this.finesseBorder.add(finesseBorderOutside);
-  this.finesseBorder.add(finesseBorderInside);
+  this.finesseBorder = makeBorder('aqua');
   this.add(this.finesseBorder);
 }
 
@@ -433,41 +395,6 @@ export function note(this: HanabiCard) {
     const tooltip = $(`#tooltip-${this.tooltipName}`);
     tooltip.tooltipster('close');
   });
-}
-
-export function criticalIndicator(this: HanabiCard) {
-  // Define the critical indicator image
-  const critX = 0.77;
-  const critY = 0.04;
-  const size = 0.2 * CARD_W;
-  this.criticalIndicator = new Konva.Image({
-    x: critX * CARD_W,
-    // If the cards have triangles on the corners that show the color composition,
-    // the images will overlap
-    // Thus, we move it downwards if this is the case
-    y: (globals.variant.offsetCornerElements ? critY + 0.1 : critY) * CARD_H,
-    align: 'center',
-    image: globals.ImageLoader!.get('critical')!,
-    width: size,
-    height: size,
-    rotation: 180,
-    shadowColor: 'black',
-    shadowBlur: 10,
-    shadowOffset: {
-      x: 0,
-      y: 0,
-    },
-    shadowOpacity: 0.9,
-    visible: false,
-    listening: false,
-  });
-  this.criticalIndicator.scale({
-    x: -1,
-    y: -1,
-  });
-  this.add(this.criticalIndicator);
-
-  // TODO: Tooltip
 }
 
 // In a game, click on a teammate's hand to it show as it would to that teammate

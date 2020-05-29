@@ -70,6 +70,7 @@ export default class HanabiCard extends Konva.Group {
 
   bare: Konva.Image | null = null;
   cluedBorder: Konva.Group | null = null;
+  criticalBorder: Konva.Group | null = null;
   chopMoveBorder: Konva.Group | null = null;
   finesseBorder: Konva.Group | null = null;
   suitPips: Konva.Group | null = null;
@@ -84,7 +85,6 @@ export default class HanabiCard extends Konva.Group {
   wrench: Konva.Image | null = null;
   arrow: Konva.Group | null = null;
   arrowBase: Konva.Arrow | null = null;
-  criticalIndicator: Konva.Image | null = null;
 
   constructor(config: Konva.ContainerConfig) {
     super(config);
@@ -113,7 +113,6 @@ export default class HanabiCard extends Konva.Group {
     HanabiCardInit.empathy.call(this);
     HanabiCardInit.click.call(this);
     HanabiCardInit.fadedImages.call(this);
-    HanabiCardInit.criticalIndicator.call(this);
   }
 
   // Erase all of the data on the card to make it like it was freshly drawn
@@ -160,6 +159,7 @@ export default class HanabiCard extends Konva.Group {
         this.finesseBorder!.show();
       }
     }
+    this.setCritical();
 
     // Reset all of the pips to their default state
     // (but don't show any pips in Real-Life mode)
@@ -190,6 +190,7 @@ export default class HanabiCard extends Konva.Group {
   }
 
   setClued(clued: boolean) {
+    this.criticalBorder!.hide();
     this.chopMoveBorder!.hide();
     this.finesseBorder!.hide();
     this.offsetY(0.5 * CARD_H);
@@ -335,16 +336,9 @@ export default class HanabiCard extends Konva.Group {
       && !globals.spectating
     ));
 
-    // Show or hide the critical indicator
-    this.criticalIndicator!.visible((
-      this.isCritical()
-      && !this.empathy
-      && !this.isPlayed
-      && !this.isDiscarded
-    ));
-
     this.setDirectionArrow();
     this.setFade();
+    this.setCritical();
   }
 
   setDirectionArrow() {
@@ -436,6 +430,20 @@ export default class HanabiCard extends Konva.Group {
     }
 
     this.opacity(newOpacity);
+  }
+
+  // Show an indicator if this card is critical, unclued, unmarked, and still in a player's hand
+  setCritical() {
+    this.criticalBorder!.visible((
+      this.isCritical()
+      && !this.empathy
+      && !this.isPlayed
+      && !this.isDiscarded
+      && !this.isClued()
+      && !this.chopMoveBorder!.isVisible()
+      && !this.finesseBorder!.isVisible()
+      && !this.noteBlank
+    ));
   }
 
   // This card was touched by a positive or negative clue,
