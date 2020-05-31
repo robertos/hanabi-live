@@ -1334,7 +1334,7 @@ const drawDiscardArea = () => {
 const drawArrows = () => {
   for (let i = 0; i < 5; i++) {
     const arrow = new Arrow(winW, winH);
-    globals.layers.arrow.add(arrow as any);
+    globals.layers.arrow.add(arrow.view as Konva.Group);
     globals.elements.arrows.push(arrow);
   }
 };

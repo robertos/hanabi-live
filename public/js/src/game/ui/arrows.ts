@@ -2,7 +2,6 @@
 // (and to highlight things in shared replays)
 
 // Imports
-import Konva from 'konva';
 import {
   ARROW_COLOR,
   CLUE_TYPE,
@@ -20,7 +19,7 @@ export const hideAll = () => {
     if (arrow.pointingTo !== null) {
       changed = true;
       arrow.pointingTo = null;
-      arrow.visible(false);
+      arrow.setVisible(false);
     }
   }
   if (!globals.animateFast && changed) {
@@ -61,21 +60,15 @@ export const set = (i: number, element: any, giver: number | null, clue: Clue | 
       rot += 180;
     }
   }
-  arrow.rotation(rot);
-
-  // We want the text to always be right-side up (e.g. have a rotaiton of 0)
-  arrow.text.rotation(360 - rot);
+  arrow.setRotation(rot);
 
   // Set the arrow features
   if (clue === null) {
     // This is a highlight arrow
-    const color = ARROW_COLOR.HIGHLIGHT;
-    arrow.base.stroke(color);
-    arrow.base.fill(color);
+    arrow.baseColor = ARROW_COLOR.HIGHLIGHT;
 
     // Don't draw the circle
-    arrow.circle.hide();
-    arrow.text.hide();
+    arrow.hideCircle();
   } else {
     // This is a clue arrow
     let color;
@@ -86,8 +79,7 @@ export const set = (i: number, element: any, giver: number | null, clue: Clue | 
       // Freshly touched cards use the default color
       color = ARROW_COLOR.DEFAULT;
     }
-    arrow.base.stroke(color);
-    arrow.base.fill(color);
+    arrow.baseColor = color;
 
     // Clue arrows have a circle that shows the type of clue given
     if (
@@ -95,41 +87,39 @@ export const set = (i: number, element: any, giver: number | null, clue: Clue | 
       || (globals.characterAssignments[giver!] === 'Quacker' && !globals.replay)
     ) {
       // Don't show the circle in variants where the clue types are supposed to be hidden
-      arrow.circle.hide();
+      arrow.hideCircle();
     } else {
-      arrow.circle.show();
+      arrow.showCircle();
       if (clue.type === CLUE_TYPE.COLOR) {
-        arrow.text.hide();
+        arrow.hideText();
 
         // The circle for color clues should have a black border and a fill matching the color
-        arrow.circle.stroke('black');
+        arrow.setCircleStroke('black');
         if (globals.variant.name.startsWith('Cow & Pig')) {
           // The specific clue color is hidden in "Cow & Pig" variants
-          arrow.circle.fill('white');
+          arrow.setCircleFill('white');
         } else {
           if (typeof clue.value === 'number') {
             throw new Error('The clue value was a number for a color clue.');
           }
-          arrow.circle.fill(clue.value.fill);
+          arrow.setCircleFill(clue.value.fill);
         }
       } else if (clue.type === CLUE_TYPE.RANK) {
         let text = clue.value.toString();
         if (globals.variant.name.startsWith('Cow & Pig')) {
           text = '#';
         }
-        arrow.text.text(text);
-        arrow.text.show();
+        arrow.setText(text);
+        arrow.showText();
 
         // The circle for number clues should have a white border and a black fill
-        arrow.circle.stroke('white');
-        arrow.circle.fill('black');
+        arrow.setCircleStroke('white');
+        arrow.setCircleFill('black');
       }
     }
   }
 
-  if (arrow.tween) {
-    arrow.tween.destroy();
-  }
+  arrow.stopAnimation();
   if (globals.animateFast || giver === null) {
     const pos = getPos(element, rot);
     arrow.setAbsolutePosition(pos);
@@ -200,13 +190,7 @@ const animate = (arrow: Arrow, card: HanabiCard, rot: number, giver: number, tur
   // (this must be done after the card is finished tweening)
   const pos = getPos(card, rot);
 
-  arrow.tween = new Konva.Tween({
-    node: arrow,
-    duration: 0.5,
-    x: pos.x,
-    y: pos.y,
-    easing: Konva.Easings.EaseOut,
-  }).play();
+  arrow.animateTo(pos);
 };
 
 export const click = (event: any, order: number, element: any) => {
@@ -242,7 +226,7 @@ export const toggle = (element: any) => {
   }
 
   const arrow = globals.elements.arrows[0];
-  const show = arrow.pointingTo !== element || arrow.base.fill() !== ARROW_COLOR.HIGHLIGHT;
+  const show = arrow.pointingTo !== element || arrow.baseColor !== ARROW_COLOR.HIGHLIGHT;
   hideAll();
   if (show) {
     set(0, element, null, null);

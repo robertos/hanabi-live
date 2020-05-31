@@ -234,9 +234,7 @@ const reset = () => {
 
   // Reset the arrows
   for (const arrow of globals.elements.arrows) {
-    if (arrow.tween) {
-      arrow.tween.destroy();
-    }
+    arrow.stopAnimation();
     arrow.hide();
   }
 
@@ -366,15 +364,7 @@ const positionReplayShuttle = (
     if (shuttle.tween) {
       shuttle.tween.destroy();
     }
-    shuttle.tween = new Konva.Tween({
-      x,
-      y,
-      scaleX: scale,
-      scaleY: scale,
-      node: shuttle,
-      duration: 0.25,
-      easing: Konva.Easings.EaseOut,
-    }).play();
+    shuttle.animateTo(x, y, scale);
   }
 };
 

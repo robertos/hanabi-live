@@ -188,4 +188,28 @@ export default class CurrentPlayerArea extends Konva.Group {
 
     this.textValues = textValues;
   }
+
+  animateRotation(rotation: number) {
+    if (this.tween !== null) {
+      this.tween.destroy();
+      this.tween = null;
+    }
+
+    // We want the arrow to always be moving clockwise
+    const oldRotation = this.arrow.rotation();
+    const unmodifiedRotation = rotation;
+    if (oldRotation > rotation) {
+      rotation += 360;
+    }
+
+    this.tween = new Konva.Tween({
+      node: this.arrow,
+      duration: 0.75,
+      rotation,
+      easing: Konva.Easings.EaseInOut,
+      onFinish: () => {
+        this.arrow.rotation(unmodifiedRotation);
+      },
+    }).play();
+  }
 }

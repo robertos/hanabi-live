@@ -6,10 +6,10 @@ export default class Button extends Konva.Group {
   enabled: boolean = true;
   pressed: boolean = false;
 
-  background: Konva.Rect;
-  textElement: FitText | null = null;
-  imageElement: Konva.Image | null = null;
-  imageDisabledElement: Konva.Image | null = null;
+  private background: Konva.Rect;
+  private textElement: FitText | null = null;
+  private imageElement: Konva.Image | null = null;
+  private imageDisabledElement: Konva.Image | null = null;
 
   tooltipName: string = '';
   tooltipContent: string = '';

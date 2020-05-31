@@ -1,7 +1,6 @@
 // The "gameAction" WebSocket command communicate a change in the game state
 
 // Imports
-import Konva from 'konva';
 import {
   CARD_W,
   CLUE_TYPE,
@@ -520,11 +519,7 @@ actionFunctions.set('strike', (data: ActionStrike) => {
   if (globals.animateFast) {
     strikeX.opacity(1);
   } else {
-    strikeX.tween = new Konva.Tween({
-      node: strikeX,
-      opacity: 1,
-      duration: 1,
-    }).play();
+    strikeX.animateIn();
   }
 
   // Record the turn that the strike happened and the card that was misplayed

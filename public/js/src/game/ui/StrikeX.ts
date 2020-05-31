@@ -14,4 +14,12 @@ export default class StrikeX extends Konva.Image {
       this.opacity(this.turn === null ? 0 : 0.125);
     }
   }
+
+  animateIn() {
+    this.tween = new Konva.Tween({
+      node: this,
+      opacity: 1,
+      duration: 1,
+    }).play();
+  }
 }

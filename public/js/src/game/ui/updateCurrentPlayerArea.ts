@@ -1,5 +1,4 @@
 // Imports
-import Konva from 'konva';
 import { LABEL_COLOR, MAX_CLUE_NUM } from '../../constants';
 import globals from './globals';
 
@@ -16,7 +15,7 @@ export default () => {
     // Don't show it if the clue UI is there
     && (!globals.ourTurn || globals.clues === 0)
     // Don't show it if the premove button is there
-    && !globals.elements.premoveCancelButton!.visible()
+    && !globals.elements.premoveCancelButton!.visible
     && globals.currentPlayerIndex !== -1, // Don't show it if this is the end of the game
   );
 
@@ -105,26 +104,6 @@ export default () => {
   if (globals.animateFast) {
     currentPlayerArea.arrow!.rotation(rotation);
   } else {
-    if (currentPlayerArea.tween !== null) {
-      currentPlayerArea.tween.destroy();
-      currentPlayerArea.tween = null;
-    }
-
-    // We want the arrow to always be moving clockwise
-    const oldRotation = currentPlayerArea.arrow.rotation();
-    const unmodifiedRotation = rotation;
-    if (oldRotation > rotation) {
-      rotation += 360;
-    }
-
-    currentPlayerArea.tween = new Konva.Tween({
-      node: currentPlayerArea.arrow,
-      duration: 0.75,
-      rotation,
-      easing: Konva.Easings.EaseInOut,
-      onFinish: () => {
-        currentPlayerArea.arrow.rotation(unmodifiedRotation);
-      },
-    }).play();
+    currentPlayerArea.animateRotation(rotation);
   }
 };
