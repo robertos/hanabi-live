@@ -1,24 +1,24 @@
 {
   "Red": {
-    "fill": "#e60000"
+    "fill": "#cb2c3b"
   },
   "Yellow": {
-    "fill": "#e6e600"
+    "fill": "#f9c80e"
   },
   "Green": {
-    "fill": "#02ec00",
+    "fill": "#2E7D32",
     "fillColorblind": "#00aa00"
   },
   "Blue": {
-    "fill": "#0037ff",
+    "fill": "#3a86ff",
     "fillColorblind": "#0055ff"
   },
   "Purple": {
-    "fill": "#6600cc",
+    "fill": "#753f8a",
     "fillColorblind": "#8800aa"
   },
   "Teal": {
-    "fill": "#00cccc"
+    "fill": "#5eb08c"
   },
   "Black": {
     "abbreviation": "K",
@@ -26,10 +26,10 @@
   },
   "Pink": {
     "abbreviation": "I",
-    "fill": "#ff69b4"
+    "fill": "#de7da8"
   },
   "Brown": {
     "abbreviation": "N",
-    "fill": "#654321"
+    "fill": "#772e25"
   }
 }

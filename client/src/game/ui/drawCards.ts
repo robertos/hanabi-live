@@ -1,5 +1,6 @@
 // The Hanabi card graphics are various HTML5 canvas drawings
 
+import tinycolor from 'tinycolor2';
 import {
   CARD_H,
   CARD_W,
@@ -56,7 +57,6 @@ export default function drawCards(
       // Draw the background and the borders around the card
       drawCardBase(ctx, suit, rank, colorblindMode);
 
-      ctx.shadowBlur = 10;
       ctx.fillStyle = getSuitStyle(suit, ctx, 'number', colorblindMode);
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 2;
@@ -74,11 +74,11 @@ export default function drawCards(
           fontSize = 68;
           textYPos = 83;
         } else {
-          fontSize = 96;
+          fontSize = 80;
           textYPos = 110;
         }
 
-        ctx.font = `bold ${fontSize}pt Arial`;
+        ctx.font = `bold ${fontSize}pt "Lucida Sans Unicode"`;
 
         // Draw the rank on the top left
         if (styleNumbers && !colorblindMode) {
@@ -330,17 +330,19 @@ const drawCardBase = (
   ctx.strokeStyle = getSuitStyle(suit, ctx, 'background', colorblindMode);
   cardBorderPath(ctx, 4);
 
-  // Draw the borders (on visible cards) and the color fill
+  // Draw the the color fill
   ctx.save();
-  ctx.globalAlpha = 0.3;
+  ctx.globalAlpha = rank === 0 ? 0.3 : 1;
   ctx.fill();
-  ctx.globalAlpha = 0.7;
-  ctx.lineWidth = 8;
-  // The borders should be more opaque for the stack base
+
+  // Draw the borders for the stack base
   if (rank === 0) {
+    ctx.lineWidth = 8;
     ctx.globalAlpha = 1;
+    ctx.strokeStyle = getSuitStyle(suit, ctx, 'number', colorblindMode);
+    ctx.stroke();
   }
-  ctx.stroke();
+
   ctx.restore();
 };
 
@@ -368,10 +370,14 @@ const drawShape = (ctx: CanvasRenderingContext2D) => {
 };
 
 const drawText = (ctx: CanvasRenderingContext2D, textYPos: number, indexLabel: string) => {
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+  ctx.shadowOffsetX = 5;
+  ctx.shadowOffsetY = 5;
+  ctx.shadowBlur = 1;
   ctx.fillText(indexLabel, 19, textYPos);
-  ctx.shadowColor = 'rgba(0, 0, 0, 0)';
-  ctx.strokeText(indexLabel, 19, textYPos);
+  // ctx.strokeText(indexLabel, 19, textYPos);
+  ctx.restore();
 };
 
 const drawMixedCardHelper = (ctx: CanvasRenderingContext2D, clueColors: Color[]) => {
@@ -440,9 +446,15 @@ const getSuitStyle = (
   cardArea: string,
   colorblindMode: boolean,
 ) => {
+  const lighten = (color: string) => tinycolor(color).lighten(30).toHexString();
+  let transform = (color: string) => color;
+  if (cardArea === 'number') {
+    transform = () => '#eeeeee';
+  }
+
   // Nearly all suits have a solid fill
   if (suit.fill !== 'multi') {
-    return colorblindMode ? suit.fillColorblind : suit.fill;
+    return transform(colorblindMode ? suit.fillColorblind : suit.fill);
   }
 
   // Rainbow suits use a gradient fill, but the specific type of gradient will depend on the
@@ -452,9 +464,9 @@ const getSuitStyle = (
   }
   if (cardArea === 'background') {
     if (suit.name === 'Omni' || suit.name === 'Dark Omni') {
-      return evenLinearGradient(ctx, suit.fillColors, [0, -30, 0, CARD_H + 30]);
+      return evenLinearGradient(ctx, suit.fillColors.map(lighten), [0, -30, 0, CARD_H + 30]);
     }
-    return evenLinearGradient(ctx, suit.fillColors, [0, 0, CARD_W, CARD_H]);
+    return evenLinearGradient(ctx, suit.fillColors.map(lighten), [0, 0, CARD_W, CARD_H]);
   }
   throw new Error(`The card area of "${cardArea}" is unknown in the "getSuitStyle()" function.`);
 };

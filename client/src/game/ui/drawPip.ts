@@ -657,7 +657,10 @@ export default function drawPip(
 
   // Handle the shadow
   if (shadow === true) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+    ctx.shadowOffsetX = 5;
+    ctx.shadowOffsetY = 5;
+    ctx.shadowBlur = 1;
   }
 
   const hasCustomFill = customFill !== undefined && customFill !== '';
@@ -672,15 +675,15 @@ export default function drawPip(
     shapeFunction(ctx, suit.fillColors);
   } else {
     // All other suits have a solid fill
-    ctx.fillStyle = suit.fill;
+    ctx.fillStyle = '#eeeeee';
     shapeFunction(ctx);
     ctx.fill();
   }
 
   // Draw a black border around the shape
-  ctx.lineWidth = hasCustomFill ? 8 : 5;
-  if (shadow === true) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0)';
-  }
-  ctx.stroke();
+  // ctx.lineWidth = 3;
+  // if (shadow === true) {
+  //   ctx.shadowColor = 'rgba(0, 0, 0, 0)';
+  // }
+  // ctx.stroke();
 }
