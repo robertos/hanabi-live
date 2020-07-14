@@ -74,11 +74,11 @@ export default function drawCards(
           fontSize = 68;
           textYPos = 83;
         } else {
-          fontSize = 80;
+          fontSize = 96;
           textYPos = 110;
         }
 
-        ctx.font = `bold ${fontSize}pt "Lucida Sans Unicode"`;
+        ctx.font = `bold ${fontSize}pt Arial`;
 
         // Draw the rank on the top left
         if (styleNumbers && !colorblindMode) {
@@ -339,7 +339,7 @@ const drawCardBase = (
   if (rank === 0) {
     ctx.lineWidth = 8;
     ctx.globalAlpha = 1;
-    ctx.strokeStyle = getSuitStyle(suit, ctx, 'number', colorblindMode);
+    ctx.fillStyle = getSuitStyle(suit, ctx, 'number', colorblindMode);
     ctx.stroke();
   }
 
@@ -370,14 +370,7 @@ const drawShape = (ctx: CanvasRenderingContext2D) => {
 };
 
 const drawText = (ctx: CanvasRenderingContext2D, textYPos: number, indexLabel: string) => {
-  ctx.save();
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
-  ctx.shadowOffsetX = 5;
-  ctx.shadowOffsetY = 5;
-  ctx.shadowBlur = 1;
   ctx.fillText(indexLabel, 19, textYPos);
-  // ctx.strokeText(indexLabel, 19, textYPos);
-  ctx.restore();
 };
 
 const drawMixedCardHelper = (ctx: CanvasRenderingContext2D, clueColors: Color[]) => {
@@ -446,15 +439,15 @@ const getSuitStyle = (
   cardArea: string,
   colorblindMode: boolean,
 ) => {
-  const lighten = (color: string) => tinycolor(color).lighten(30).toHexString();
-  let transform = (color: string) => color;
-  if (cardArea === 'number') {
-    transform = () => '#eeeeee';
+  const lighten = (color: string) => tinycolor(color).lighten(30).brighten(10).toHexString();
+  let maybeLighten = (color: string) => color;
+  if (cardArea === 'background') {
+    maybeLighten = lighten;
   }
 
   // Nearly all suits have a solid fill
   if (suit.fill !== 'multi') {
-    return transform(colorblindMode ? suit.fillColorblind : suit.fill);
+    return maybeLighten(colorblindMode ? suit.fillColorblind : suit.fill);
   }
 
   // Rainbow suits use a gradient fill, but the specific type of gradient will depend on the
