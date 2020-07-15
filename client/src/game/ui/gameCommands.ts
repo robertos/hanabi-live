@@ -26,7 +26,6 @@ import * as notes from './notes';
 import pause from './pause';
 import StateObserver from './reactive/StateObserver';
 import * as replay from './replay';
-import strikeRecord from './strikeRecord';
 import * as timer from './timer';
 import * as tooltips from './tooltips';
 import * as turn from './turn';
@@ -136,6 +135,7 @@ commands.set('gameOver', () => {
   // The final turn displays how long everyone took,
   // so we want to go to the turn before that, which we recorded earlier
   replay.goto(globals.finalReplayTurn, true);
+  console.log('Going to the finalReplayTurn:', globals.finalReplayTurn);
 
   // Hide the "Exit Replay" button in the center of the screen, since it is no longer necessary
   globals.elements.replayExitButton!.hide();
@@ -229,7 +229,7 @@ commands.set('hypoStart', () => {
 interface InitData {
   // Game settings
   tableID: number;
-  names: string[];
+  playerNames: string[];
   seat: number;
   spectating: boolean;
   replay: boolean;
@@ -262,7 +262,7 @@ commands.set('init', (data: InitData) => {
 
   // Game settings
   globals.lobby.tableID = data.tableID; // Equal to the table ID on the server
-  globals.playerNames = data.names;
+  globals.playerNames = data.playerNames;
   globals.playerUs = data.seat; // 0 if a spectator or a replay of a game that we were not in
   globals.spectating = data.spectating;
   globals.replay = data.replay;
@@ -288,6 +288,7 @@ commands.set('init', (data: InitData) => {
   // Recreate the state store (using the Redux library)
   const metadata: GameMetadata = {
     options: data.options,
+    playerNames: data.playerNames,
     ourPlayerIndex: data.seat,
     spectating: data.spectating || data.replay,
     characterAssignments,
@@ -319,7 +320,7 @@ commands.set('init', (data: InitData) => {
     globals.replayTurn = -1;
 
     // HACK: also let the state know this is a replay
-    globals.store!.dispatch({ type: 'startReplay', turn: 0 });
+    globals.store!.dispatch({ type: 'startReplay', segment: 0 });
   }
 
   // Now that we know the number of players and the variant, we can start to load & draw the UI
@@ -398,7 +399,8 @@ commands.set('noteListPlayer', (data: NoteListPlayerData) => {
   notes.setAllCardIndicators();
 
   // Check for special notes
-  for (let i = 0; i <= globals.indexOfLastDrawnCard; i++) {
+  const indexOfLastDrawnCard = globals.store!.getState().visibleState!.deck.length - 1;
+  for (let i = 0; i <= indexOfLastDrawnCard; i++) {
     const card = globals.deck[i];
     card.checkSpecialNote();
   }
@@ -427,21 +429,8 @@ const processNewAction = (actionMessage: GameAction) => {
 
   if (actionMessage.type === 'turn') {
     // Keep track of whether it is our turn or not
-    globals.ourTurn = actionMessage.who === globals.playerUs && !globals.spectating;
-
-    // We need to update the replay slider, based on the new amount of turns
-    globals.replayMax = actionMessage.num;
-    if (globals.inReplay) {
-      replay.adjustShuttles(false);
-      globals.elements.replayForwardButton!.setEnabled(true);
-      globals.elements.replayForwardFullButton!.setEnabled(true);
-      globals.layers.UI.batchDraw();
-    }
-
-    // On the second turn and beyond, ensure that the "In-Game Replay" button is enabled
-    if (!globals.replay && globals.replayMax > 0) {
-      globals.elements.replayButton!.setEnabled(true);
-    }
+    // TODO: Legacy code, remove this
+    globals.ourTurn = actionMessage.currentPlayerIndex === globals.playerUs && !globals.spectating;
   } else if (actionMessage.type === 'clue' && variantRules.isAlternatingClues(globals.variant)) {
     if (actionMessage.clue.type === ClueType.Color) {
       for (const button of globals.elements.colorClueButtons) {
@@ -468,9 +457,12 @@ const processNewAction = (actionMessage: GameAction) => {
     action(actionMessage);
   }
 
-  // If the game is over,
-  // don't immediately draw the subsequent turns that contain the game times
-  if (!globals.gameOver && actionMessage.type === 'turn' && actionMessage.who === -1) {
+  // If the game is over, do not immediately draw the subsequent turns that contain the game times
+  if (
+    !globals.gameOver
+    && actionMessage.type === 'turn'
+    && actionMessage.currentPlayerIndex === -1
+  ) {
     globals.gameOver = true;
     globals.finalReplayPos = globals.replayLog.length;
     globals.finalReplayTurn = actionMessage.num;
@@ -488,16 +480,6 @@ commands.set('gameActionList', (data: GameActionListData) => {
   // Play through all of the turns
   for (const actionMessage of data.list) {
     processNewAction(actionMessage);
-
-    // Some specific messages contain global state information that we need to record
-    // (since we might be in a replay that is starting on the first turn,
-    // the respective action functions will not be reached until
-    // we actually progress to that turn of the replay)
-    if (actionMessage.type === 'strike') {
-      // Record the turns that the strikes happen
-      // (or else clicking on the strike squares won't work on a freshly initialized replay)
-      strikeRecord(actionMessage);
-    }
   }
 
   // Initialize solo replays to the first turn (otherwise, nothing will be drawn)

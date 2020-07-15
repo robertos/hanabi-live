@@ -1,19 +1,15 @@
 // In shared replays, players can enter a hypotheticals where can perform arbitrary actions in order
 // to see what will happen
 
-import { getVariant } from '../data/gameData';
-import * as variantRules from '../rules/variant';
 import { ActionIncludingHypothetical } from '../types/actions';
 import ActionType from '../types/ActionType';
 import ClientAction from '../types/ClientAction';
 import ClueType from '../types/ClueType';
-import { MAX_CLUE_NUM } from '../types/constants';
 import MsgClue from '../types/MsgClue';
 import ReplayActionType from '../types/ReplayActionType';
 import action from './action';
 import { getTouchedCardsFromClue } from './clues';
 import PlayerButton from './controls/PlayerButton';
-import { suitIndexToSuit } from './convert';
 import globals from './globals';
 import HanabiCard from './HanabiCard';
 import LayoutChild from './LayoutChild';
@@ -134,7 +130,8 @@ export const end = () => {
   // The "replay.goto()" function will do nothing if we are already at the target turn,
   // so set the current replay turn to the end of the game to force it to draw/compute the
   // game from the beginning
-  globals.replayTurn = globals.replayMax;
+  const finalSegment = globals.store!.getState().ongoingGame.turn.segment!;
+  globals.replayTurn = finalSegment;
   replay.goto(globals.sharedReplayTurn, true, true);
 
   // In case we blanked out any cards in the hypothetical,
@@ -181,7 +178,6 @@ export const beginTurn = () => {
 
 export const send = (hypoAction: ClientAction) => {
   const state = globals.store!.getState();
-  const variant = getVariant(state.metadata.options.variantName);
   const cardIdentities = state.cardIdentities;
   const gameState = state.replay.hypothetical!.ongoing;
 
@@ -196,9 +192,6 @@ export const send = (hypoAction: ClientAction) => {
   ) {
     type = 'clue';
   }
-
-  let newScore = gameState.score;
-  let newClueTokens = gameState.clueTokens;
 
   if (type === 'clue') {
     // Clue
@@ -220,27 +213,6 @@ export const send = (hypoAction: ClientAction) => {
       target: hypoAction.target,
       turn: gameState.turn.turnNum,
     });
-    newClueTokens -= 1;
-
-    // Text
-    let text = `${globals.playerNames[gameState.turn.currentPlayerIndex!]} tells `;
-    text += `${globals.playerNames[hypoAction.target]} about `;
-    const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six'];
-    text += `${words[list.length]} `;
-
-    if (clue.type === ClueType.Color) {
-      text += variant.clueColors[clue.value].name;
-    } else if (clue.type === ClueType.Rank) {
-      text += clue.value;
-    }
-    if (list.length !== 1) {
-      text += 's';
-    }
-
-    sendHypoAction({
-      type: 'text',
-      text,
-    });
 
     cycleHand();
   } else if (type === 'play' || type === 'discard') {
@@ -255,34 +227,6 @@ export const send = (hypoAction: ClientAction) => {
       rank: card.rank!,
       failed: false,
     });
-    if (type === 'play') {
-      newScore += 1;
-    }
-    if (
-      (type === 'play' && card.rank === 5 && newClueTokens < MAX_CLUE_NUM)
-      || type === 'discard'
-    ) {
-      newClueTokens += 1;
-      if (variantRules.isClueStarved(variant)) {
-        newClueTokens -= 0.5;
-      }
-    }
-
-    // Text
-    let text = `${globals.playerNames[gameState.turn.currentPlayerIndex!]} ${type}s `;
-    if (card.suitIndex !== null && card.rank !== null) {
-      const suit = suitIndexToSuit(card.suitIndex!, variant)!;
-      text += `${suit.name} ${card.rank} `;
-    } else {
-      text += 'a card ';
-    }
-    const hand = gameState.hands[gameState.turn.currentPlayerIndex!];
-    const slot = hand.findIndex((o) => o === card.order) + 1;
-    text += `from slot #${slot}`;
-    sendHypoAction({
-      type: 'text',
-      text,
-    });
 
     // Draw
     const nextCardOrder = gameState.deck.length;
@@ -294,22 +238,14 @@ export const send = (hypoAction: ClientAction) => {
       sendHypoAction({
         type: 'draw',
         order: nextCardOrder,
-        // Always send the correct suitIndex and rank, blank will be done on the client
+        playerIndex: gameState.turn.currentPlayerIndex!,
+        // Always send the correct suitIndex and rank;
+        // the blanking of the card will be performed on the client
         suitIndex: nextCard.suitIndex,
         rank: nextCard.rank,
-        who: gameState.turn.currentPlayerIndex!,
       });
     }
   }
-
-  // Status
-  sendHypoAction({
-    type: 'status',
-    clues: variantRules.isClueStarved(variant) ? newClueTokens * 2 : newClueTokens,
-    doubleDiscard: false,
-    score: newScore,
-    maxScore: gameState.maxScore,
-  });
 
   // Turn
   let nextPlayerIndex = gameState.turn.currentPlayerIndex! + 1;
@@ -319,7 +255,7 @@ export const send = (hypoAction: ClientAction) => {
   sendHypoAction({
     type: 'turn',
     num: gameState.turn.turnNum + 1,
-    who: nextPlayerIndex,
+    currentPlayerIndex: nextPlayerIndex,
   });
 };
 
@@ -370,8 +306,9 @@ export const backOneTurn = () => {
     && globals.hypoActions.length > 0
   ));
 
-  // Reset to the turn where the hypothetical started
-  globals.replayTurn = globals.replayMax;
+  // Reset to the segment where the hypothetical started
+  const finalSegment = globals.store!.getState().ongoingGame.turn.segment!;
+  globals.replayTurn = finalSegment;
   replay.goto(globals.sharedReplayTurn, true, true);
 
   // Replay all of the hypothetical actions

@@ -43,13 +43,14 @@ const statsReducer = produce((
         // A clued card was discarded
         stats.cardsGotten -= 1;
       }
+
       break;
     }
 
     case 'strike': {
       // TODO move this check to the play action when we have logic for knowing which cards play
       // A strike is equivalent to losing a clue
-      stats.potentialCluesLost += clueTokensRules.clueValue(variant);
+      stats.potentialCluesLost += clueTokensRules.value(variant);
       break;
     }
 
@@ -60,7 +61,7 @@ const statsReducer = produce((
       ) {
         // If we finished a stack while at max clues, then the extra clue is "wasted",
         // similar to what happens when the team gets a strike
-        stats.potentialCluesLost += clueTokensRules.clueValue(variant);
+        stats.potentialCluesLost += clueTokensRules.value(variant);
       }
 
       const card = originalState.deck[action.order];
@@ -71,16 +72,41 @@ const statsReducer = produce((
       break;
     }
 
-    default:
+    default: {
       break;
+    }
+  }
+
+  // Handle double discard calculation
+  if (action.type === 'discard') {
+    stats.doubleDiscard = statsRules.doubleDiscard(
+      variant,
+      action.order,
+      currentState.deck,
+      currentState.playStacks,
+      currentState.playStackDirections,
+    );
+  } else if (action.type === 'play' || action.type === 'clue') {
+    stats.doubleDiscard = false;
+  }
+
+  // Handle max score calculation
+  if (action.type === 'play' || action.type === 'discard') {
+    stats.maxScore = statsRules.getMaxScore(
+      currentState.deck,
+      currentState.playStackDirections,
+      variant,
+    );
   }
 
   // Now that the action has occurred, update the stats relating to the current game state
   stats.pace = statsRules.pace(
     currentState.score,
     currentState.deckSize,
-    currentState.maxScore,
+    stats.maxScore,
     metadata.options.numPlayers,
+    // currentPlayerIndex will be null if the game is over
+    currentState.turn.currentPlayerIndex === null,
   );
   stats.paceRisk = statsRules.paceRisk(stats.pace, metadata.options.numPlayers);
   stats.efficiency = statsRules.efficiency(stats.cardsGotten, stats.potentialCluesLost);

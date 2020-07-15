@@ -270,18 +270,7 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
   }
 
   setBareImage() {
-    // Optimization: This function is expensive, so don't do it in replays
-    // unless we got to the final destination
-    // However, if an action happens before the "turn" message is sent,
-    // we still need to redraw any affected cards
-    if (
-      this.bareName !== ''
-      && globals.replay
-      && globals.turn < globals.replayTurn - 1
-    ) {
-      console.warn(`Unnecessary setBareImage call. Order: ${this.state.order}`);
-      return;
-    }
+    const oldBareName = this.bareName;
 
     // Retrieve the identity of the card
     // We may know the identity through normal means
@@ -467,6 +456,10 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
     this.setCritical();
 
     globals.layers.card.batchDraw();
+
+    if (this.bareName === oldBareName) {
+      console.warn(`Unnecessary setBareImage call. Order: ${this.state.order}`);
+    }
   }
 
   // Show or hide the direction arrow (for specific variants)
@@ -480,7 +473,7 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
       return;
     }
 
-    const direction = globals.stackDirections[suitIndex];
+    const direction = globals.playStackDirections[suitIndex];
     const suit = this.variant.suits[suitIndex];
 
     let shouldShowArrow;
@@ -842,7 +835,7 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
     variant: Variant,
     deck: readonly CardState[],
     playStacks: ReadonlyArray<readonly number[]>,
-    stackDirections: readonly StackDirection[],
+    playStackDirections: readonly StackDirection[],
     card: CardState,
   ) => boolean) {
     const visibleState = globals.store!.getState().visibleState;
@@ -852,9 +845,9 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
     const variant = this.variant;
     const deck = visibleState.deck;
     const playStacks = visibleState.playStacks;
-    const stackDirections = visibleState.playStacksDirections;
+    const playStackDirections = visibleState.playStackDirections;
     const state = this.state;
-    return fn(variant, deck, playStacks, stackDirections, state);
+    return fn(variant, deck, playStacks, playStackDirections, state);
   }
 
   // Update all UI pips to their state

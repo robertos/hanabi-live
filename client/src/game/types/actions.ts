@@ -1,5 +1,6 @@
 import CardIdentity from './CardIdentity';
 import ClientAction from './ClientAction';
+import EndCondition from './EndCondition';
 import MsgClue from './MsgClue';
 
 export type Action =
@@ -13,13 +14,14 @@ export type GameAction =
   | ActionClue
   | ActionDiscard
   | ActionDraw
+  | ActionGameDuration
   | ActionGameOver
   | ActionPlay
+  | ActionPlayerTimes
   | ActionReorder
-  | ActionStackDirections
+  | ActionPlayStackDirections
   | ActionStatus
   | ActionStrike
-  | ActionText
   | ActionTurn;
 
 export type ActionIncludingHypothetical = GameAction | ActionHypotheticalMorph;
@@ -81,15 +83,20 @@ export interface ActionDiscard {
 
 export interface ActionDraw {
   type: 'draw';
-  readonly who: number;
-  readonly rank: number;
-  readonly suitIndex: number;
+  readonly playerIndex: number;
   readonly order: number;
+  readonly suitIndex: number;
+  readonly rank: number;
+}
+
+export interface ActionGameDuration {
+  type: 'gameDuration';
+  duration: number;
 }
 
 export interface ActionGameOver {
   type: 'gameOver';
-  readonly endCondition: number;
+  readonly endCondition: EndCondition;
   readonly playerIndex: number;
 }
 
@@ -101,14 +108,19 @@ export interface ActionPlay {
   readonly rank: number;
 }
 
+export interface ActionPlayerTimes {
+  type: 'playerTimes';
+  readonly playerTimes: number[];
+}
+
 export interface ActionReorder {
   type: 'reorder';
   readonly target: number;
   readonly handOrder: number[];
 }
 
-export interface ActionStackDirections {
-  type: 'stackDirections';
+export interface ActionPlayStackDirections {
+  type: 'playStackDirections';
   readonly directions: number[];
 }
 
@@ -127,15 +139,10 @@ export interface ActionStrike {
   readonly turn: number;
 }
 
-export interface ActionText {
-  type: 'text';
-  readonly text: string;
-}
-
 export interface ActionTurn {
   type: 'turn';
   readonly num: number;
-  readonly who: number;
+  readonly currentPlayerIndex: number;
 }
 
 // --------------
@@ -144,7 +151,7 @@ export interface ActionTurn {
 
 export interface ActionStartReplay {
   type: 'startReplay';
-  readonly turn: number;
+  readonly segment: number;
 }
 
 export interface ActionEndReplay {
@@ -152,8 +159,8 @@ export interface ActionEndReplay {
 }
 
 export interface ActionGoToTurn {
-  type: 'goToTurn';
-  readonly turn: number;
+  type: 'goToSegment';
+  readonly segment: number;
 }
 
 // --------------------

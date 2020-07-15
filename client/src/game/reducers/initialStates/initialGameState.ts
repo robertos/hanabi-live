@@ -20,7 +20,7 @@ export default function initialGameState(metadata: GameMetadata): GameState {
   );
   const startingPace = statsRules.startingPace(options.numPlayers, cardsPerHand, variant);
   const hands: number[][] = initArray(options.numPlayers, []);
-  const playStacksDirections: StackDirection[] = initArray(
+  const playStackDirections: StackDirection[] = initArray(
     variant.suits.length,
     StackDirection.Undecided,
   );
@@ -33,17 +33,17 @@ export default function initialGameState(metadata: GameMetadata): GameState {
     deck: [],
     deckSize: deck.totalCards(variant),
     score: 0,
-    maxScore: variant.maxScore,
     numAttemptedCardsPlayed: 0,
     clueTokens: MAX_CLUE_NUM,
-    doubleDiscard: false,
     strikes: [],
     hands,
     playStacks,
-    playStacksDirections,
+    playStackDirections,
     discardStacks,
     clues: [],
     stats: {
+      maxScore: variant.maxScore,
+      doubleDiscard: false,
       cardsGotten: 0,
       potentialCluesLost: 0,
       efficiency: Infinity,

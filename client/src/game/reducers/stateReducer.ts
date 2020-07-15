@@ -38,6 +38,9 @@ const stateReducer = produce((state: Draft<State>, action: Action) => {
     }
 
     case 'cardIdentities': {
+      // This code causes the game to crash upon terminating with an obscure error message
+      // TODO rob should fix and uncomment
+      /*
       // Either we just entered a new replay or an ongoing game ended,
       // so the server sent us a list of the identities for every card in the deck
       state.cardIdentities = action.cardIdentities;
@@ -57,13 +60,14 @@ const stateReducer = produce((state: Draft<State>, action: Action) => {
         state.visibleState = state.ongoingGame;
         state.replay.states = castDraft(states);
       }
+      */
 
       break;
     }
 
     case 'startReplay':
     case 'endReplay':
-    case 'goToTurn':
+    case 'goToSegment':
     case 'hypoStart':
     case 'hypoBack':
     case 'hypoEnd':
@@ -85,18 +89,20 @@ const stateReducer = produce((state: Draft<State>, action: Action) => {
 
     default: {
       // A new game action happened
+      const previousSegment = state.ongoingGame.turn.segment;
       state.ongoingGame = gameStateReducer(original(state.ongoingGame)!, action, state.metadata)!;
 
       // We copy the card identities to the global state for convenience
       updateCardIdentities(state);
 
-      // Save a copy of the game state on every turn (for the purposes of in-game replays)
-      if (action.type === 'turn') {
-        state.replay.states[action.num] = state.ongoingGame;
+      // When the game state reducer sets "segment" to a new number,
+      // it is a signal to record the current state of the game (for the purposes of replays)
+      if (
+        state.ongoingGame.turn.segment !== previousSegment
+        && state.ongoingGame.turn.segment !== null
+      ) {
+        state.replay.states[state.ongoingGame.turn.segment] = state.ongoingGame;
       }
-
-      // Also save the action to replay the whole game later
-      state.replay.actions.push(action);
 
       break;
     }
@@ -108,7 +114,7 @@ const stateReducer = produce((state: Draft<State>, action: Action) => {
     if (state.replay.active) {
       if (state.replay.hypothetical === null) {
         // Go to current replay turn
-        state.visibleState = state.replay.states[state.replay.turn];
+        state.visibleState = state.replay.states[state.replay.segment];
       } else {
         // Show the current hypothetical
         state.visibleState = state.replay.hypothetical.ongoing;
@@ -129,9 +135,13 @@ function reduceGameActions(actions: GameAction[], initialState: GameState, metad
   const game = actions.reduce((s: GameState, a: GameAction) => {
     const nextState = gameStateReducer(s, a, metadata);
 
-    if (a.type === 'turn') {
-      // Store the current state in the state table to enable replays
-      states[a.num] = nextState;
+    // When the game state reducer sets "segment" to a new number,
+    // it is a signal to record the current state of the game (for the purposes of replays)
+    if (
+      nextState.turn.segment !== s.turn.segment
+        && nextState.turn.segment !== null
+    ) {
+      states[nextState.turn.segment] = nextState;
     }
 
     return nextState;

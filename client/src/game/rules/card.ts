@@ -1,13 +1,22 @@
 /* eslint-disable import/prefer-default-export */
 
 import CardState from '../types/CardState';
-import { STACK_BASE_RANK } from '../types/constants';
+import { STACK_BASE_RANK, START_CARD_RANK } from '../types/constants';
 import StackDirection from '../types/StackDirection';
 import Variant from '../types/Variant';
 import * as deckRules from './deck';
 import * as playStacksRules from './playStacks';
 import * as variantRules from './variant';
 import * as reversibleRules from './variants/reversible';
+
+export function name(suitIndex: number, rank: number, variant: Variant) {
+  const suitName = variant.suits[suitIndex].name;
+  let rankName = rank.toString();
+  if (rank === START_CARD_RANK) {
+    rankName = 'START';
+  }
+  return `${suitName} ${rankName}`;
+}
 
 export function isClued(card: CardState) {
   return card.numPositiveClues > 0;
@@ -29,7 +38,7 @@ export function isCritical(
   variant: Variant,
   deck: readonly CardState[],
   playStacks: ReadonlyArray<readonly number[]>,
-  stackDirections: readonly StackDirection[],
+  playStackDirections: readonly StackDirection[],
   card: CardState,
 ) {
   if (
@@ -38,7 +47,7 @@ export function isCritical(
     || card.rank === 0 // Base
     || isPlayed(card)
     || isDiscarded(card)
-    || !needsToBePlayed(variant, deck, playStacks, stackDirections, card)
+    || !needsToBePlayed(variant, deck, playStacks, playStackDirections, card)
   ) {
     return false;
   }
@@ -48,7 +57,7 @@ export function isCritical(
     return reversibleRules.isCardCritical(
       variant,
       deck,
-      stackDirections,
+      playStackDirections,
       card,
     );
   }
@@ -69,7 +78,7 @@ export function needsToBePlayed(
   variant: Variant,
   deck: readonly CardState[],
   playStacks: ReadonlyArray<readonly number[]>,
-  stackDirections: readonly StackDirection[],
+  playStackDirections: readonly StackDirection[],
   card: CardState,
 ) {
   // First, check to see if a copy of this card has already been played
@@ -93,7 +102,7 @@ export function needsToBePlayed(
       variant,
       deck,
       playStacks,
-      stackDirections,
+      playStackDirections,
       card,
     );
   }
@@ -123,12 +132,18 @@ export function isPotentiallyPlayable(
   variant: Variant,
   deck: readonly CardState[],
   playStacks: ReadonlyArray<readonly number[]>,
-  stackDirections: readonly StackDirection[],
+  playStackDirections: readonly StackDirection[],
   card: CardState,
 ) {
   // Calculating this in an Up or Down variant is more complicated
   if (variantRules.hasReversedSuits(variant)) {
-    return reversibleRules.isPotentiallyPlayable(variant, deck, playStacks, stackDirections, card);
+    return reversibleRules.isPotentiallyPlayable(
+      variant,
+      deck,
+      playStacks,
+      playStackDirections,
+      card,
+    );
   }
 
   let potentiallyPlayable = false;

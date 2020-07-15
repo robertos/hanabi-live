@@ -8,16 +8,20 @@ import * as arrows from '../../arrows';
 import ClueEntry from '../../ClueEntry';
 import globals from '../../globals';
 
-export function onCluesChanged(data: { clues: readonly StateClue[]; turn: number }) {
-  updateArrows(data.clues, data.turn);
+export function onCluesChanged(data: { clues: readonly StateClue[]; segment: number | null }) {
+  updateArrows(data.clues, data.segment);
   updateLog(data.clues);
 }
 
-function updateArrows(clues: readonly StateClue[], turn: number) {
+function updateArrows(clues: readonly StateClue[], segment: number | null) {
   arrows.hideAll();
 
+  if (segment === null) {
+    return;
+  }
+
   const lastClue = clues[clues.length - 1];
-  if (lastClue === undefined || lastClue.turn !== turn - 1) {
+  if (lastClue === undefined || lastClue.segment !== segment - 1) {
     // We are initializing (or we rewinded and just removed the first clue)
     return;
   }
@@ -48,10 +52,10 @@ function updateLog(clues: readonly StateClue[]) {
       height: 0.017 * globals.stage.height(),
       giver: globals.playerNames[clue.giver],
       target: globals.playerNames[clue.target],
-      clueName: cluesRules.getClueName(clue, globals.variant, characterID),
+      clueName: cluesRules.getClueName(clue.type, clue.value, globals.variant, characterID),
       list: clue.list,
       negativeList: clue.negativeList,
-      turn: clue.turn,
+      segment: clue.segment,
     });
     if (i < clueLog.children.length) {
       clueLog.updateClue(i, entry);

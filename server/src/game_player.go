@@ -6,7 +6,6 @@ package main
 import (
 	"math"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -86,68 +85,6 @@ func (p *GamePlayer) GiveClue(d *CommandData) {
 		Turn:   g.Turn,
 	})
 	t.NotifyGameAction()
-
-	// Send the "message" message about the clue
-	text := p.Name + " tells " + p2.Name + " about "
-	words := []string{
-		"zero",
-		"one",
-		"two",
-		"three",
-		"four",
-		"five",
-		"six",
-	}
-	text += words[len(cardsTouched)] + " "
-
-	if clue.Type == ClueTypeColor {
-		text += variants[g.Options.VariantName].ClueColors[clue.Value]
-	} else if clue.Type == ClueTypeRank {
-		text += strconv.Itoa(clue.Value)
-	}
-	if len(cardsTouched) != 1 {
-		text += "s"
-	}
-
-	if strings.HasPrefix(g.Options.VariantName, "Cow & Pig") ||
-		strings.HasPrefix(g.Options.VariantName, "Duck") ||
-		p.Character == "Quacker" { // 34
-
-		// Create a list of slot numbers that correspond to the cards touched
-		slots := make([]string, 0)
-		for _, order := range cardsTouched {
-			slots = append(slots, strconv.Itoa(p2.GetCardSlot(order)))
-		}
-		sort.Strings(slots)
-
-		text = p.Name + " "
-		if strings.HasPrefix(g.Options.VariantName, "Cow & Pig") {
-			if clue.Type == ClueTypeColor {
-				text += "moos"
-				g.Sound = "moo"
-			} else if clue.Type == ClueTypeRank {
-				text += "oinks"
-				g.Sound = "oink"
-			}
-		} else if strings.HasPrefix(g.Options.VariantName, "Duck") ||
-			p.Character == "Quacker" { // 34
-
-			text += "quacks"
-			g.Sound = "quack"
-		}
-		text += " at " + p2.Name + "'"
-		if !strings.HasSuffix(p2.Name, "s") {
-			text += "s"
-		}
-		text += " slot " + strings.Join(slots, "/")
-	}
-
-	g.Actions = append(g.Actions, ActionText{
-		Type: "text",
-		Text: text,
-	})
-	t.NotifyGameAction()
-	logger.Info(t.GetName() + text)
 
 	// Do post-clue tasks
 	characterPostClue(d, g, p)
@@ -271,38 +208,6 @@ func (p *GamePlayer) PlayCard(c *Card) bool {
 	})
 	t.NotifyGameAction()
 
-	// Send the "message" about the play
-	text := p.Name + " plays "
-	if strings.HasPrefix(g.Options.VariantName, "Throw It in a Hole") {
-		text += "a card"
-	} else {
-		text += c.Name(g)
-	}
-	text += " from "
-	if c.Slot == -1 {
-		text += "the deck"
-	} else {
-		text += "slot #" + strconv.Itoa(c.Slot)
-	}
-	if c.Touched {
-		// Mark that the blind-play streak has ended
-		g.BlindPlays = 0
-	} else {
-		text += " (blind)"
-		g.BlindPlays++
-		if g.BlindPlays > 4 {
-			// There is no sound effect for more than 4 blind plays in a row
-			g.BlindPlays = 4
-		}
-		g.Sound = "blind" + strconv.Itoa(g.BlindPlays)
-	}
-	g.Actions = append(g.Actions, ActionText{
-		Type: "text",
-		Text: text,
-	})
-	t.NotifyGameAction()
-	logger.Info(t.GetName() + text)
-
 	// Give the team a clue if the final card of the suit was played
 	// (this will always be a 5 unless it is a custom variant)
 	extraClue := c.Rank == 5
@@ -310,7 +215,7 @@ func (p *GamePlayer) PlayCard(c *Card) bool {
 	// Handle custom variants that do not play in order from 1 to 5
 	if variants[g.Options.VariantName].HasReversedSuits() {
 		extraClue = (c.Rank == 5 || c.Rank == 1) &&
-			g.StackDirections[c.SuitIndex] == StackDirectionFinished
+			g.PlayStackDirections[c.SuitIndex] == StackDirectionFinished
 	}
 
 	if extraClue {
@@ -383,43 +288,6 @@ func (p *GamePlayer) DiscardCard(c *Card) bool {
 	})
 	t.NotifyGameAction()
 
-	text := p.Name + " "
-	if c.Failed {
-		if strings.HasPrefix(g.Options.VariantName, "Throw It in a Hole") {
-			text += "plays"
-		} else {
-			text += "fails to play"
-		}
-	} else {
-		text += "discards"
-	}
-	text += " "
-	if strings.HasPrefix(g.Options.VariantName, "Throw It in a Hole") && c.Failed {
-		text += "a card"
-	} else {
-		text += c.Name(g)
-	}
-	text += " from "
-	if c.Slot == -1 {
-		text += "the deck"
-	} else {
-		text += "slot #" + strconv.Itoa(c.Slot)
-	}
-	if !c.Failed && c.Touched {
-		text += " (clued)"
-		g.Sound = "turn_discard_clued"
-	}
-	if c.Failed && c.Slot != -1 && !c.Touched {
-		text += " (blind)"
-	}
-
-	g.Actions = append(g.Actions, ActionText{
-		Type: "text",
-		Text: text,
-	})
-	t.NotifyGameAction()
-	logger.Info(t.GetName() + text)
-
 	// Check to see if revealing this card would surprise the player
 	// (we want to have it in the middle of the function so that it will
 	// overwrite the clued card sound but not overwrite the sad sound)
@@ -462,11 +330,11 @@ func (p *GamePlayer) DrawCard() {
 	p.Hand = append(p.Hand, c)
 
 	g.Actions = append(g.Actions, ActionDraw{
-		Type:      "draw",
-		Who:       p.Index,
-		SuitIndex: c.SuitIndex,
-		Rank:      c.Rank,
-		Order:     c.Order,
+		Type:        "draw",
+		PlayerIndex: p.Index,
+		Order:       c.Order,
+		SuitIndex:   c.SuitIndex,
+		Rank:        c.Rank,
 	})
 	if t.Running {
 		t.NotifyGameAction()

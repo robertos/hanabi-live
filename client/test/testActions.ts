@@ -7,7 +7,6 @@ import {
   ActionDraw,
   ActionPlay,
   ActionStrike,
-  ActionText,
   ActionHypotheticalStart,
   ActionHypotheticalBack,
   ActionHypotheticalEnd,
@@ -69,24 +68,24 @@ export const rankClue = (
 );
 
 export const draw = (
-  who: number,
-  suitIndex: number,
-  rank: number,
+  playerIndex: number,
   order: number,
+  suitIndex: number = -1,
+  rank: number = -1,
 ): ActionDraw => ({
   type: 'draw',
-  who,
+  playerIndex,
+  order,
   suitIndex,
   rank,
-  order,
 });
 
 export const discard = (
-  failed: boolean,
   playerIndex: number,
+  order: number,
   suitIndex: number,
   rank: number,
-  order: number,
+  failed: boolean,
 ): ActionDiscard => ({
   type: 'discard',
   playerIndex,
@@ -98,9 +97,9 @@ export const discard = (
 
 export const play = (
   playerIndex: number,
+  order: number,
   suitIndex: number,
   rank: number,
-  order: number,
 ): ActionPlay => ({
   type: 'play',
   playerIndex,
@@ -116,20 +115,15 @@ export const strike = (num: number, order: number, turn: number): ActionStrike =
   turn,
 });
 
-export const text = (textContent: string): ActionText => ({
-  type: 'text',
-  text: textContent,
-});
-
-export const turn = (num: number, who: number): ActionTurn => ({
+export const turn = (num: number, currentPlayerIndex: number): ActionTurn => ({
   type: 'turn',
   num,
-  who,
+  currentPlayerIndex,
 });
 
-export const startReplay = (turnNumber: number): ActionStartReplay => ({
+export const startReplay = (segment: number): ActionStartReplay => ({
   type: 'startReplay',
-  turn: turnNumber,
+  segment,
 });
 
 export const endReplay = (): ActionEndReplay => ({ type: 'endReplay' });

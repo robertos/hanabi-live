@@ -584,24 +584,14 @@ func characterNeedsToTakeSecondTurn(d *CommandData, g *Game, p *GamePlayer) bool
 	return false
 }
 
-func characterShuffle(g *Game, p *GamePlayer) {
-	if !g.Options.DetrimentalCharacters {
-		return
-	}
-
-	if p.Character == "Forgetful" { // 32
-		p.ShuffleHand()
-	}
-}
-
 func characterHideCard(a *ActionDraw, g *Game, p *GamePlayer) bool {
 	if !g.Options.DetrimentalCharacters {
 		return false
 	}
 
-	if p.Character == "Blind Spot" && a.Who == p.GetLeftPlayer() { // 29
+	if p.Character == "Blind Spot" && a.PlayerIndex == p.GetLeftPlayer() { // 29
 		return true
-	} else if p.Character == "Oblivious" && a.Who == p.GetRightPlayer() { // 30
+	} else if p.Character == "Oblivious" && a.PlayerIndex == p.GetRightPlayer() { // 30
 		return true
 	}
 
@@ -623,9 +613,6 @@ func characterAdjustEndTurn(g *Game) {
 }
 
 func characterCheckSoftlock(g *Game, p *GamePlayer) {
-	// Local variables
-	t := g.Table
-
 	if !g.Options.DetrimentalCharacters {
 		return
 	}
@@ -635,14 +622,7 @@ func characterCheckSoftlock(g *Game, p *GamePlayer) {
 		(p.Character == "Vindictive" || // 9
 			p.Character == "Insistent") { // 13
 
-		g.Strikes = 3
-
-		text := p.Name + " was left with 0 clues!"
-		g.Actions = append(g.Actions, ActionText{
-			Type: "text",
-			Text: text,
-		})
-		t.NotifyGameAction()
+		g.EndCondition = EndConditionCharacterSoftlock
 	}
 }
 
