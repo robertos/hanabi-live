@@ -40,7 +40,6 @@ export default class NameFrame extends Konva.Group {
       text: config.name,
       fill: LABEL_COLOR,
       shadowColor: 'black',
-      shadowBlur: 5,
       shadowOffset: {
         x: 0,
         y: 3,
@@ -91,7 +90,6 @@ export default class NameFrame extends Konva.Group {
       strokeWidth: this.defaultStrokeWidth,
       lineJoin: 'round',
       shadowColor: 'black',
-      shadowBlur: 5,
       shadowOffset: {
         x: 0,
         y: 3,
@@ -114,7 +112,6 @@ export default class NameFrame extends Konva.Group {
       strokeWidth: this.defaultStrokeWidth,
       lineJoin: 'round',
       shadowColor: 'black',
-      shadowBlur: 5,
       shadowOffset: {
         x: 0,
         y: 3,

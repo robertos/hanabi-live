@@ -483,7 +483,6 @@ const drawDetrimentalCharacters = (
     text: character.emoji,
     fill: 'yellow',
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,

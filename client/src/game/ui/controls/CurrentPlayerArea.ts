@@ -71,7 +71,6 @@ export default class CurrentPlayerArea extends Konva.Group {
       align: 'center',
       fill: LABEL_COLOR,
       shadowColor: 'black',
-      shadowBlur: 10,
       shadowOffset: {
         x: 0,
         y: 0,
@@ -90,7 +89,6 @@ export default class CurrentPlayerArea extends Konva.Group {
       align: 'center',
       fill: '#ffffcc',
       shadowColor: 'black',
-      shadowBlur: 10,
       shadowOffset: {
         x: 0,
         y: 0,
@@ -109,7 +107,6 @@ export default class CurrentPlayerArea extends Konva.Group {
       align: 'center',
       fill: 'red',
       shadowColor: 'black',
-      shadowBlur: 10,
       shadowOffset: {
         x: 0,
         y: 0,
@@ -163,7 +160,6 @@ export default class CurrentPlayerArea extends Konva.Group {
       fill: 'black',
       stroke: 'black',
       strokeWidth: baseArrowLength * 2,
-      shadowBlur: 75,
       shadowOpacity: 1,
       listening: false,
     });

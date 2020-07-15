@@ -165,7 +165,6 @@ const initReusableObjects = () => {
     text: 'Placeholder text',
     fill: LABEL_COLOR,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
@@ -238,7 +237,6 @@ const drawActionLog = () => {
     fontFamily: 'Verdana',
     fill: LABEL_COLOR,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
@@ -629,7 +627,6 @@ const drawDeck = () => {
     align: 'center',
     fontSize: 0.02 * winH,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
@@ -1010,7 +1007,6 @@ const drawSpectators = () => {
     align: 'center',
     image: globals.imageLoader!.get('eyes')!,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
@@ -1036,7 +1032,6 @@ const drawSpectators = () => {
     text: '0',
     fill: LABEL_COLOR,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
@@ -1077,7 +1072,6 @@ const drawSharedReplay = () => {
     height: size,
     image: globals.imageLoader!.get('crown')!,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
@@ -1977,7 +1971,6 @@ const drawPauseArea = () => {
     align: 'center',
     fill: 'white',
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
@@ -1996,7 +1989,6 @@ const drawPauseArea = () => {
     align: 'center',
     fill: 'white',
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,

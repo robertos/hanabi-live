@@ -46,7 +46,6 @@ export default class Arrow extends Konva.Group {
       fill: 'black',
       stroke: 'black',
       strokeWidth: pointerLength * 2,
-      shadowBlur: pointerLength * 4,
       shadowOpacity: 1,
       listening: false,
     });

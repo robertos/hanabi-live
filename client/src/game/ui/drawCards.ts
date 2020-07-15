@@ -53,7 +53,6 @@ export default function drawCards(
       // Draw the background and the borders around the card
       drawCardBase(ctx, suit, rank, colorblindMode);
 
-      ctx.shadowBlur = 10;
       ctx.fillStyle = getSuitStyle(suit, ctx, 'number', colorblindMode);
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 2;

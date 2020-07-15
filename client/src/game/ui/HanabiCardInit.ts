@@ -350,7 +350,6 @@ export const note = (offsetCornerElements: boolean, shouldShowIndicator: () => b
     rotation: 180,
     shadowEnabled: !globals.options.speedrun,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
@@ -385,7 +384,6 @@ export const criticalIndicator = (offsetCornerElements: boolean) => {
     rotation: 180,
     shadowEnabled: !globals.options.speedrun,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
