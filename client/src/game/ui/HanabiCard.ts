@@ -834,7 +834,6 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
     this.bare.to({
       shadowOffsetX: shadowOffset,
       shadowOffsetY: shadowOffset,
-      shadowBlur: cursor === 'dragging' ? Math.floor(0.06 * CARD_W) : Math.floor(0.03 * CARD_W),
       duration: globals.animateFast ? 0 : 0.1,
     });
     const baseOffsetY = this.isRaisedBecauseOfClues() ? 0.6 * CARD_H : 0.5 * CARD_H;

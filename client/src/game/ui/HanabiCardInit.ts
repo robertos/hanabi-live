@@ -29,7 +29,6 @@ export const image = (getBareName: () => string, isStackBase: () => boolean) => 
     image: null as unknown as ImageBitmapSource,
     shadowEnabled: false,
     shadowColor: 'black',
-    shadowBlur: Math.floor(0.03 * CARD_W),
     shadowOffset: {
       x: Math.floor(0.04 * CARD_W),
       y: Math.floor(0.04 * CARD_W),
@@ -346,7 +345,6 @@ export const note = (offsetCornerElements: boolean, shouldShowIndicator: () => b
     height: size,
     rotation: 180,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,
@@ -380,7 +378,6 @@ export const criticalIndicator = (offsetCornerElements: boolean) => {
     height: size,
     rotation: 180,
     shadowColor: 'black',
-    shadowBlur: 10,
     shadowOffset: {
       x: 0,
       y: 0,

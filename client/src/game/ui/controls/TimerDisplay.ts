@@ -34,7 +34,6 @@ export default class TimerDisplay extends Konva.Group {
       text: '??:??',
       fill: LABEL_COLOR,
       shadowColor: 'black',
-      shadowBlur: 10,
       shadowOffset: {
         x: 0,
         y: 0,
@@ -54,7 +53,6 @@ export default class TimerDisplay extends Konva.Group {
       text: config.label as (string | undefined),
       fill: LABEL_COLOR,
       shadowColor: 'black',
-      shadowBlur: 10,
       shadowOffset: {
         x: 0,
         y: 0,
