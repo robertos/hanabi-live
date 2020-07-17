@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import * as modals from '../../modals';
 import backToLobby from './backToLobby';
-import { LABEL_COLOR } from './constants';
+import { LABEL_COLOR, FONT_FACE_UI } from './constants';
 import globals from './globals';
 import * as tooltips from './tooltips';
 
@@ -35,7 +35,7 @@ export default class NameFrame extends Konva.Group {
       y: 0,
       height: config.height,
       align: 'center',
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fontSize: config.height,
       text: config.name,
       fill: LABEL_COLOR,

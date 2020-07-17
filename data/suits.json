@@ -33,11 +33,11 @@
     "createVariants": true,
     "fill": "multi",
     "fillColors": [
-      "#ff0000",
-      "#ffff00",
-      "#02ec00",
-      "#0037ff",
-      "#8000ff"
+      "#f94c42",
+      "#f5bd4a",
+      "#00b42d",
+      "#4864b6",
+      "#a32cc4"
     ],
     "pip": "rainbow"
   },

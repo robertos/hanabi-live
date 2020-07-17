@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import Clue from '../types/Clue';
 import { drawLayer } from './konvaHelpers';
+import { FONT_FACE_UI } from '../../constants';
 
 export default class RankButton extends Konva.Group {
   pressed: boolean = false;
@@ -36,7 +37,7 @@ export default class RankButton extends Konva.Group {
       width: w,
       height: 0.5 * h,
       fontSize: 0.5 * h,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fill: 'white',
       align: 'center',
       text: (config.number as number).toString(),

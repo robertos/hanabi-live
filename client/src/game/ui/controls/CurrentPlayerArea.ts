@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { LABEL_COLOR } from '../constants';
+import { LABEL_COLOR, FONT_FACE_UI } from '../constants';
 import globals from '../globals';
 import FitText from './FitText';
 
@@ -65,7 +65,7 @@ export default class CurrentPlayerArea extends Konva.Group {
     this.text1 = new FitText({
       x: textValues.x * winW,
       width: textValues.w * winW,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fontSize: 0.08 * winH,
       text: 'Current player:',
       align: 'center',
@@ -83,7 +83,7 @@ export default class CurrentPlayerArea extends Konva.Group {
     this.text2 = new FitText({
       x: textValues.x * winW,
       width: textValues.w * winW,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fontSize: 0.08 * winH,
       text: '',
       align: 'center',
@@ -101,7 +101,7 @@ export default class CurrentPlayerArea extends Konva.Group {
     this.text3 = new FitText({
       x: textValues.x2 * winW,
       width: textValues.w2 * winW,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fontSize: 0.08 * winH,
       text: '',
       align: 'center',

@@ -5,7 +5,7 @@ import Color from '../types/Color';
 import { STACK_BASE_RANK, START_CARD_RANK, UNKNOWN_CARD_RANK } from '../types/constants';
 import Suit from '../types/Suit';
 import Variant from '../types/Variant';
-import { CARD_H, CARD_W } from './constants';
+import { CARD_H, CARD_W, FONT_FACE_RANK } from './constants';
 import drawPip from './drawPip';
 import drawStylizedRank from './drawStylizedRank';
 
@@ -52,7 +52,11 @@ export default function drawCards(
       // Draw the background and the borders around the card
       drawCardBase(ctx, suit, rank, colorblindMode);
 
-      ctx.fillStyle = rank === 5 ? '#ffffff' : getSuitStyle(suit, ctx, 'number', colorblindMode);
+      if (rank === 5 && suit !== unknownSuit) {
+        ctx.fillStyle = '#ffffff';
+      } else {
+        ctx.fillStyle = getSuitStyle(suit, ctx, 'number', colorblindMode);
+      }
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 2;
       ctx.lineJoin = 'round';
@@ -73,7 +77,7 @@ export default function drawCards(
           textYPos = 145;
         }
 
-        ctx.font = `bold ${fontSize}pt Epilogue`;
+        ctx.font = `${fontSize}pt ${FONT_FACE_RANK}`;
 
         // Draw the rank on the top left
         if (styleNumbers && !colorblindMode) {
@@ -168,7 +172,7 @@ const drawSuitPips = (
   // Unknown rank, so draw large faint suit
   if (rank === UNKNOWN_CARD_RANK) {
     ctx.save();
-    ctx.globalAlpha = colorblindMode ? 0.4 : 0.1;
+    ctx.globalAlpha = colorblindMode ? 0.7 : 0.4;
     ctx.translate(CARD_W / 2, CARD_H / 2);
     ctx.scale(scale * 3, scale * 3);
     drawPip(ctx, suit, true);
@@ -190,12 +194,9 @@ const makeUnknownCard = () => {
   ctx.save();
   ctx.globalAlpha = 0.5;
   ctx.fill();
-  ctx.globalAlpha = 0.6;
-  ctx.lineWidth = 8;
-  ctx.stroke();
   ctx.restore();
 
-  ctx.fillStyle = '#444444';
+  ctx.fillStyle = '#111111';
   ctx.lineWidth = 8;
   ctx.lineJoin = 'round';
 
@@ -237,6 +238,10 @@ const drawCardBase = (
   rank: number,
   colorblindMode: boolean,
 ) => {
+  if (suit.name === 'Unknown') {
+    return;
+  }
+
   // Draw the background
   ctx.fillStyle = getSuitStyle(suit, ctx, 'background', colorblindMode);
   ctx.strokeStyle = getSuitStyle(suit, ctx, 'background', colorblindMode);
@@ -398,7 +403,7 @@ const getSuitStyle = (
     if (suit.name === 'Omni' || suit.name === 'Dark Omni') {
       return evenLinearGradient(ctx, suit.fillColors, [0, -30, 0, CARD_H + 30]);
     }
-    return evenLinearGradient(ctx, suit.fillColors, [0, 0, CARD_W, CARD_H]);
+    return evenLinearGradient(ctx, suit.fillColors, [0, CARD_H * 0.8, CARD_W, 0.2]);
   }
   throw new Error(`The card area of "${cardArea}" is unknown in the "getSuitStyle()" function.`);
 };

@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import { drawLayer } from '../konvaHelpers';
 import FitText from './FitText';
+import { FONT_FACE_UI } from '../../../constants';
 
 export default class Button extends Konva.Group {
   enabled: boolean = true;
@@ -43,7 +44,7 @@ export default class Button extends Konva.Group {
         width: w,
         height: 0.5 * h,
         fontSize: 0.5 * h,
-        fontFamily: 'Verdana',
+        fontFamily: FONT_FACE_UI,
         fill: 'white',
         align: 'center',
         text: config.text as string,

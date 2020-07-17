@@ -16,7 +16,7 @@ import CardLayout from './CardLayout';
 import ClueLog from './ClueLog';
 import * as clues from './clues';
 import ColorButton from './ColorButton';
-import { LABEL_COLOR } from './constants';
+import { LABEL_COLOR, FONT_FACE_UI } from './constants';
 import Arrow from './controls/Arrow';
 import Button from './controls/Button';
 import ClickArea from './controls/ClickArea';
@@ -160,7 +160,7 @@ const initReusableObjects = () => {
     width: 0.11 * winW,
     height: 0.03 * winH,
     fontSize: 0.026 * winH,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     align: 'left',
     text: 'Placeholder text',
     fill: LABEL_COLOR,
@@ -234,7 +234,7 @@ const drawActionLog = () => {
   globals.elements.actionLog = new MultiFitText({
     align: 'center',
     fontSize: 0.028 * winH,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     fill: LABEL_COLOR,
     shadowColor: 'black',
     shadowOffset: {
@@ -355,7 +355,7 @@ const drawPlayStacks = () => {
         width: 0.08 * winW,
         height: 0.051 * winH,
         fontSize: 0.02 * winH,
-        fontFamily: 'Verdana',
+        fontFamily: FONT_FACE_UI,
         align: 'center',
         text,
         fill: LABEL_COLOR,
@@ -622,7 +622,7 @@ const drawDeck = () => {
     x: deckValues.x * winW,
     y: (deckValues.y + 0.01) * winH,
     width: deckValues.w! * winW,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     fill: 'white',
     align: 'center',
     fontSize: 0.02 * winH,
@@ -1027,7 +1027,7 @@ const drawSpectators = () => {
     width: 0.03 * winW,
     height: 0.03 * winH,
     fontSize: 0.03 * winH,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     align: 'center',
     text: '0',
     fill: LABEL_COLOR,
@@ -1190,7 +1190,7 @@ const drawYourTurn = () => {
     x: 0.003 * winW,
     y: 0.003 * winH,
     fontSize: 0.034 * winH,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     fill: 'yellow',
     align: 'center',
     text: 'Your\nTurn',
@@ -1800,7 +1800,7 @@ const drawClueAreaDisabled = () => {
     y: clueAreaValues.h! * 0.4 * winH,
     width: clueAreaValues.w! * winW,
     fontSize: 0.07 * winH,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     align: 'center',
     text: 'No clues',
     fill: LABEL_COLOR,
@@ -1885,7 +1885,7 @@ const drawHypotheticalArea = () => {
     name: 'text',
     width: hypoValues.w! * winW,
     fontSize: 0.06 * winH,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     fill: LABEL_COLOR,
     align: 'center',
     text: 'Hypothetical',
@@ -1965,7 +1965,7 @@ const drawPauseArea = () => {
   const pauseTitle = new Konva.Text({
     y: 0.1 * winH,
     width: pauseAreaValues.w * winW,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     fontSize: 0.08 * winH,
     text: 'Game Paused',
     align: 'center',
@@ -1983,7 +1983,7 @@ const drawPauseArea = () => {
   globals.elements.pauseText = new Konva.Text({
     y: 0.21 * winH,
     width: pauseAreaValues.w * winW,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     fontSize: 0.05 * winH,
     text: 'by: [username]',
     align: 'center',

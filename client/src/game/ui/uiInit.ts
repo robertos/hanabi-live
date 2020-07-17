@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import * as deck from '../rules/deck';
-import { LABEL_COLOR } from './constants';
+import { LABEL_COLOR, FONT_FACE_UI } from './constants';
 import drawCards from './drawCards';
 import drawUI from './drawUI';
 import globals from './globals';
@@ -59,7 +59,7 @@ export default function uiInit() {
     y: 0.7 * winH,
     width: winW,
     height: 0.05 * winH,
-    fontFamily: 'Arial',
+    fontFamily: FONT_FACE_UI,
     fontStyle: 'bold',
     fontSize: 0.05 * winH,
     listening: false,
@@ -76,7 +76,7 @@ export default function uiInit() {
     y: 0.8 * winH,
     width: winW,
     height: 0.05 * winH,
-    fontFamily: 'Arial',
+    fontFamily: FONT_FACE_UI,
     fontStyle: 'bold',
     fontSize: 0.05 * winH,
     listening: false,

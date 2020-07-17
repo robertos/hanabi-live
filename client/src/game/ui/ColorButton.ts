@@ -5,6 +5,7 @@ import Suit from '../types/Suit';
 import drawPip from './drawPip';
 import globals from './globals';
 import { drawLayer } from './konvaHelpers';
+import { FONT_FACE_UI } from '../../constants';
 
 export default class ColorButton extends Konva.Group {
   pressed: boolean = false;
@@ -55,7 +56,7 @@ export default class ColorButton extends Konva.Group {
           width: w,
           height: 0.6 * h,
           fontSize: 0.5 * h,
-          fontFamily: 'Verdana',
+          fontFamily: FONT_FACE_UI,
           fill: 'white',
           stroke: 'black',
           strokeWidth: 0.01487 * h,

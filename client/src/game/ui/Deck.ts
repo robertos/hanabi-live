@@ -4,7 +4,7 @@ import { deckRules } from '../rules';
 import ActionType from '../types/ActionType';
 import ReplayArrowOrder from '../types/ReplayArrowOrder';
 import * as arrows from './arrows';
-import { TOOLTIP_DELAY } from './constants';
+import { TOOLTIP_DELAY, FONT_FACE_UI } from './constants';
 import globals from './globals';
 import * as tooltips from './tooltips';
 import * as turn from './turn';
@@ -41,7 +41,7 @@ export default class Deck extends Konva.Group {
       width: this.width(),
       height: 0.4 * this.height(),
       fontSize: 0.4 * this.height(),
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fontStyle: 'bold',
       text: deckRules.totalCards(globals.variant).toString(),
       listening: false,

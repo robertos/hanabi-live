@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import Button from './Button';
 import FitText from './FitText';
+import { FONT_FACE_UI } from '../../../constants';
 
 export default class ThreeLineButton extends Button {
   textElement1: Konva.Text;
@@ -25,7 +26,7 @@ export default class ThreeLineButton extends Button {
       width: w,
       height: 0.2 * h,
       fontSize: 0.2 * h,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fill: 'white',
       align: 'center',
       text: config.text as string | undefined,

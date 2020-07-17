@@ -14,6 +14,7 @@ import {
   CHOP_MOVE_COLOR,
   FINESSE_COLOR,
   OFF_BLACK,
+  FONT_FACE_RANK,
 } from './constants';
 import NoteIndicator from './controls/NoteIndicator';
 import RankPip from './controls/RankPip';
@@ -50,10 +51,9 @@ export const image = (getBareName: () => string) => {
 };
 
 const borderCornerRadius = 6;
-const borderStrokeWidth = 20;
+const borderStrokeWidth = 30;
 const borderStrokeWidthInside = borderStrokeWidth * 0.6;
-const borderOffset = 2;
-const borderOutsideColor = OFF_BLACK;
+const padding = 10;
 
 const makeBorder = (color: string) => {
   const border = new Konva.Group({
@@ -62,18 +62,18 @@ const makeBorder = (color: string) => {
   });
 
   const borderConfig = (strokeWidth: number, stroke: string): RectConfig => ({
-    width: CARD_W - borderOffset,
-    height: CARD_H - borderOffset,
+    x: padding,
+    y: padding,
+    width: CARD_W - (2 * padding),
+    height: CARD_H - (2 * padding),
     cornerRadius: borderCornerRadius,
     strokeWidth,
     stroke,
     listening: false,
   });
 
-  const borderOutside = new Konva.Rect(borderConfig(borderStrokeWidth, borderOutsideColor));
   const borderInside = new Konva.Rect(borderConfig(borderStrokeWidthInside, color));
 
-  border.add(borderOutside);
   border.add(borderInside);
 
   return border;
@@ -280,8 +280,7 @@ export const pips = (variant: Variant) => {
     const rankPip = new RankPip({
       x,
       y,
-      fontFamily: 'Arial',
-      fontStyle: 'bold',
+      fontFamily: FONT_FACE_RANK,
       fontSize: 63,
       align: 'center',
       text: rank.toString(),

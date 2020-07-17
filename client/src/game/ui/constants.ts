@@ -19,6 +19,10 @@ export const CHOP_MOVE_COLOR = '#fffce6'; // White with a yellow tint
 export const FINESSE_COLOR = 'aqua';
 export const OFF_BLACK = '#0d0d0d';
 
+// Fonts
+export const FONT_FACE_UI = 'Verdana';
+export const FONT_FACE_RANK = 'Epilogue';
+
 // Time constants
 export const TOOLTIP_DELAY = 500; // In milliseconds
 export const PREPLAY_DELAY = 50; // In milliseconds

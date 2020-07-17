@@ -2,6 +2,7 @@ import Konva from 'konva';
 import FitText from './controls/FitText';
 import globals from './globals';
 import MultiFitText from './MultiFitText';
+import { FONT_FACE_UI } from '../../constants';
 
 export default class FullActionLog extends Konva.Group {
   buffer: Array<{turnNum: number; text: string}> = [];
@@ -44,7 +45,7 @@ export default class FullActionLog extends Konva.Group {
     // The text for each action
     const textOptions = {
       fontSize: 0.025 * winH,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fill: 'white',
       x: 0.04 * winW,
       y: 0.01 * winH,
@@ -58,7 +59,7 @@ export default class FullActionLog extends Konva.Group {
     // The turn numbers for each action
     const numbersOptions = {
       fontSize: 0.025 * winH,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fill: '#d3d3d3', // Light gray
       x: 0.01 * winW,
       y: 0.01 * winH,
@@ -72,7 +73,7 @@ export default class FullActionLog extends Konva.Group {
     // The text displayed when the selected player hasn't taken any actions
     const emptyMessageOptions = {
       fontSize: 0.025 * winH,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fill: 'white',
       x: 0.04 * winW,
       y: 0.01 * winH,

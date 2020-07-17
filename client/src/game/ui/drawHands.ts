@@ -3,7 +3,9 @@ import { getCharacter } from '../data/gameData';
 import * as hand from '../rules/hand';
 import Character from '../types/Character';
 import CardLayout from './CardLayout';
-import { CARD_W, CARD_H, OFF_BLACK } from './constants';
+import {
+  CARD_W, CARD_H, OFF_BLACK, FONT_FACE_UI,
+} from './constants';
 import TextWithTooltip from './controls/TextWithTooltip';
 import globals from './globals';
 import NameFrame from './NameFrame';
@@ -478,7 +480,7 @@ const drawDetrimentalCharacters = (
     x: (playerNamePos[numPlayers][j].x * winW) - (width2 / 2),
     y: (playerNamePos[numPlayers][j].y * winH) - (height2 / 2),
     fontSize: 0.03 * winH,
-    fontFamily: 'Verdana',
+    fontFamily: FONT_FACE_UI,
     align: 'center',
     text: character.emoji,
     fill: 'yellow',

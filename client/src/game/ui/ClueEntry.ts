@@ -1,6 +1,7 @@
 // This is one of the entries in the clue log (in the top-right-hand corner of the UI)
 
 import Konva from 'konva';
+import { FONT_FACE_UI } from '../../constants';
 import { cluesRules } from '../rules';
 import { StateClue } from '../types/GameState';
 import FitText from './controls/FitText';
@@ -47,7 +48,7 @@ export default class ClueEntry extends Konva.Group {
       width: 0.3 * w,
       height: h,
       fontSize: 0.9 * h,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fill: 'white',
       text: globals.state.metadata.playerNames[clue.giver],
       verticalAlign: 'middle',
@@ -61,7 +62,7 @@ export default class ClueEntry extends Konva.Group {
       width: 0.3 * w,
       height: h,
       fontSize: 0.9 * h,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fill: 'white',
       text: globals.state.metadata.playerNames[clue.target],
       verticalAlign: 'middle',
@@ -77,7 +78,7 @@ export default class ClueEntry extends Konva.Group {
       height: h,
       align: 'center',
       fontSize: 0.9 * h,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fill: 'white',
       text: cluesRules.getClueName(clue.type, clue.value, globals.variant, characterID),
       verticalAlign: 'middle',
@@ -92,7 +93,7 @@ export default class ClueEntry extends Konva.Group {
       height: h,
       align: 'center',
       fontSize: 0.9 * h,
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       fill: 'white',
       text: '✘',
       visible: false,

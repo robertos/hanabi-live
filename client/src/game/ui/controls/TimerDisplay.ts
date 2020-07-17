@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { LABEL_COLOR } from '../constants';
+import { LABEL_COLOR, FONT_FACE_UI } from '../constants';
 import FitText from './FitText';
 
 export default class TimerDisplay extends Konva.Group {
@@ -30,7 +30,7 @@ export default class TimerDisplay extends Konva.Group {
       width: config.width,
       height: config.height,
       fontSize: config.fontSize as (number | undefined),
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       align: 'center',
       text: '??:??',
       fill: LABEL_COLOR,
@@ -50,7 +50,7 @@ export default class TimerDisplay extends Konva.Group {
       width: config.width,
       height: config.height,
       fontSize: (config.labelFontSize || config.fontSize) as (number | undefined),
-      fontFamily: 'Verdana',
+      fontFamily: FONT_FACE_UI,
       align: 'center',
       text: config.label as (string | undefined),
       fill: LABEL_COLOR,
