@@ -70,11 +70,11 @@ export default function drawCards(
         let fontSize;
         if (colorblindMode) {
           rankLabel += suit.abbreviation;
-          fontSize = 68;
-          textYPos = 83;
+          fontSize = 70;
+          textYPos = 110;
         } else {
-          fontSize = 120;
-          textYPos = 160;
+          fontSize = 90;
+          textYPos = 130;
         }
 
         ctx.font = `bold ${fontSize}pt ${FONT_FACE_RANK}`;
@@ -149,7 +149,7 @@ const drawSuitPips = (
   // Bottom left for all cards
   if (rank !== STACK_BASE_RANK && rank !== UNKNOWN_CARD_RANK) {
     ctx.save();
-    ctx.translate(0.2 * CARD_W, CARD_H * 0.84);
+    ctx.translate(0.23 * CARD_W, CARD_H * 0.85);
     ctx.scale(scale * 1.1, scale * 1.1);
     if (rank === 1) {
       drawPip(ctx, suit, true);
@@ -249,7 +249,7 @@ const drawCardBase = (
   ctx.save();
   cardBorderPath(ctx, 4);
   ctx.clip();
-  ctx.lineWidth = 30;
+  ctx.lineWidth = 40;
   ctx.lineCap = 'round';
   ctx.globalAlpha = 1;
   ctx.stroke();
@@ -260,14 +260,15 @@ const drawCardBase = (
     ctx.fill();
   } else if ((rank >= 1 && rank <= 5) || rank === START_CARD_RANK) {
     // Draw the angled background
-    let percentLeft = (0.17 * (5 - rank)) + 0.27;
+    const angle = 0.20;
+    let percentLeft = (angle * (5 - rank)) + 0.20;
     if (rank === 5) {
       percentLeft = 0; // Fill the whole card
     }
     if (rank === START_CARD_RANK) {
       anglePath(ctx, 4, 0.5, 0.5);
     } else {
-      anglePath(ctx, 4, percentLeft, percentLeft - 0.17);
+      anglePath(ctx, 4, percentLeft, percentLeft - angle);
     }
     ctx.globalAlpha = 1;
     ctx.fill();
@@ -380,7 +381,7 @@ const drawMixedCardHelper = (ctx: CanvasRenderingContext2D, clueColors: Color[])
 const drawCardBackground = (ctx: CanvasRenderingContext2D) => {
   cardBorderPath(ctx, 4);
 
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = '#fefefe';
   ctx.fill();
 
   ctx.restore();

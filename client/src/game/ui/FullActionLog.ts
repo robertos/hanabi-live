@@ -1,8 +1,8 @@
 import Konva from 'konva';
+import { FONT_FACE_UI } from '../../constants';
 import FitText from './controls/FitText';
 import globals from './globals';
 import MultiFitText from './MultiFitText';
-import { FONT_FACE_UI } from '../../constants';
 
 export default class FullActionLog extends Konva.Group {
   buffer: Array<{turnNum: number; text: string}> = [];
