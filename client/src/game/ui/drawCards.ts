@@ -73,11 +73,11 @@ export default function drawCards(
           fontSize = 68;
           textYPos = 83;
         } else {
-          fontSize = 130;
-          textYPos = 145;
+          fontSize = 120;
+          textYPos = 160;
         }
 
-        ctx.font = `${fontSize}pt ${FONT_FACE_RANK}`;
+        ctx.font = `bold ${fontSize}pt ${FONT_FACE_RANK}`;
 
         // Draw the rank on the top left
         if (styleNumbers && !colorblindMode) {
@@ -247,14 +247,17 @@ const drawCardBase = (
   ctx.strokeStyle = getSuitStyle(suit, ctx, 'background', colorblindMode);
 
   ctx.save();
+  cardBorderPath(ctx, 4);
+  ctx.clip();
+  ctx.lineWidth = 30;
+  ctx.lineCap = 'round';
+  ctx.globalAlpha = 1;
+  ctx.stroke();
+
   // Draw the borders (on visible cards) and the color fill on stack bases
   if (rank === STACK_BASE_RANK) {
-    cardBorderPath(ctx, 4);
     ctx.globalAlpha = 0.3;
     ctx.fill();
-    ctx.lineWidth = 8;
-    ctx.globalAlpha = 1;
-    ctx.stroke();
   } else if ((rank >= 1 && rank <= 5) || rank === START_CARD_RANK) {
     // Draw the angled background
     let percentLeft = (0.17 * (5 - rank)) + 0.27;
@@ -320,7 +323,7 @@ const drawShape = (ctx: CanvasRenderingContext2D) => {
 };
 
 const drawText = (ctx: CanvasRenderingContext2D, textYPos: number, indexLabel: string) => {
-  ctx.fillText(indexLabel, 19, textYPos);
+  ctx.fillText(indexLabel, 35, textYPos);
 };
 
 const drawMixedCardHelper = (ctx: CanvasRenderingContext2D, clueColors: Color[]) => {
