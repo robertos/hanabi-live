@@ -1,20 +1,20 @@
 {
   "Red": {
-    "fill": "#e60000"
+    "fill": "#f94c42"
   },
   "Yellow": {
-    "fill": "#e6e600"
+    "fill": "#f5bd4a"
   },
   "Green": {
-    "fill": "#02ec00",
+    "fill": "#00b42d",
     "fillColorblind": "#00aa00"
   },
   "Blue": {
-    "fill": "#0037ff",
+    "fill": "#4864b6",
     "fillColorblind": "#0055ff"
   },
   "Purple": {
-    "fill": "#6600cc",
+    "fill": "#a32cc4",
     "fillColorblind": "#8800aa"
   },
   "Teal": {

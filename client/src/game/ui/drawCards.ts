@@ -1,7 +1,6 @@
 // The card graphics are various HTML5 canvas drawings
 
 import { getSuit } from '../data/gameData';
-import * as variantRules from '../rules/variant';
 import Color from '../types/Color';
 import { STACK_BASE_RANK, START_CARD_RANK, UNKNOWN_CARD_RANK } from '../types/constants';
 import Suit from '../types/Suit';
@@ -53,7 +52,7 @@ export default function drawCards(
       // Draw the background and the borders around the card
       drawCardBase(ctx, suit, rank, colorblindMode);
 
-      ctx.fillStyle = getSuitStyle(suit, ctx, 'number', colorblindMode);
+      ctx.fillStyle = rank === 5 ? '#ffffff' : getSuitStyle(suit, ctx, 'number', colorblindMode);
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 2;
       ctx.lineJoin = 'round';
@@ -70,11 +69,11 @@ export default function drawCards(
           fontSize = 68;
           textYPos = 83;
         } else {
-          fontSize = 96;
-          textYPos = 110;
+          fontSize = 130;
+          textYPos = 145;
         }
 
-        ctx.font = `bold ${fontSize}pt Arial`;
+        ctx.font = `bold ${fontSize}pt Epilogue`;
 
         // Draw the rank on the top left
         if (styleNumbers && !colorblindMode) {
@@ -82,7 +81,6 @@ export default function drawCards(
           drawStylizedRank(ctx, rank);
           ctx.restore();
           ctx.fill();
-          ctx.stroke();
         } else {
           drawText(ctx, textYPos, rankLabel);
         }
@@ -92,26 +90,6 @@ export default function drawCards(
         // (e.g. for in-game replays)
         const cardImagesIndex = `Index-${suit.name}-${rank}`;
         cardImages.set(cardImagesIndex, cloneCanvas(cvs));
-
-        // Draw the rank on the bottom right
-        if (!variantRules.isUpOrDown(variant) && !suit.reversed) {
-          ctx.save();
-          ctx.translate(CARD_W, CARD_H);
-          ctx.rotate(Math.PI);
-          if (styleNumbers && !colorblindMode) {
-            drawStylizedRank(ctx, rank);
-            ctx.restore();
-            ctx.translate(CARD_W, CARD_H);
-            ctx.rotate(Math.PI);
-            ctx.fill();
-            ctx.stroke();
-            ctx.translate(CARD_W, CARD_H);
-            ctx.rotate(Math.PI);
-          } else {
-            drawText(ctx, textYPos, rankLabel);
-          }
-          ctx.restore();
-        }
       }
 
       // The "Unknown" suit does not have pips
@@ -164,83 +142,21 @@ const drawSuitPips = (
 ) => {
   const scale = 0.4;
 
-  // The middle for card 1
-  if (rank === 1) {
+  // Bottom left for all cards
+  if (rank !== STACK_BASE_RANK && rank !== UNKNOWN_CARD_RANK) {
     ctx.save();
-    ctx.translate(CARD_W / 2, CARD_H / 2);
-    ctx.scale(scale * 1.8, scale * 1.8);
-    drawPip(ctx, suit, true);
-    ctx.restore();
-  }
-
-  // Top and bottom for card 2
-  if (rank === 2) {
-    const symbolYPos = colorblindMode ? 60 : 90;
-    ctx.save();
-    ctx.translate(CARD_W / 2, CARD_H / 2);
-    ctx.translate(0, -symbolYPos);
-    ctx.scale(scale * 1.4, scale * 1.4);
-    drawPip(ctx, suit, true);
-    ctx.restore();
-
-    ctx.save();
-    ctx.translate(CARD_W / 2, CARD_H / 2);
-    ctx.translate(0, symbolYPos);
-    ctx.scale(scale * 1.4, scale * 1.4);
-    ctx.rotate(Math.PI);
-    drawPip(ctx, suit, true);
-    ctx.restore();
-  }
-
-  // Top and bottom for cards 3, 4, 5
-  if (rank >= 3 && rank <= 5) {
-    const symbolYPos = colorblindMode ? 80 : 120;
-    ctx.save();
-    ctx.translate(CARD_W / 2, CARD_H / 2);
-    ctx.translate(0, -symbolYPos);
-    ctx.scale(scale, scale);
-    drawPip(ctx, suit, true);
-    ctx.restore();
-
-    ctx.save();
-    ctx.translate(CARD_W / 2, CARD_H / 2);
-    ctx.translate(0, symbolYPos);
-    ctx.scale(scale, scale);
-    ctx.rotate(Math.PI);
-    drawPip(ctx, suit, true);
-    ctx.restore();
-  }
-
-  // Left and right for cards 4 and 5
-  if (rank === 4 || rank === 5) {
-    ctx.save();
-    ctx.translate(CARD_W / 2, CARD_H / 2);
-    ctx.translate(-90, 0);
-    ctx.scale(scale, scale);
-    drawPip(ctx, suit, true);
-    ctx.restore();
-
-    ctx.save();
-    ctx.translate(CARD_W / 2, CARD_H / 2);
-    ctx.translate(90, 0);
-    ctx.scale(scale, scale);
-    ctx.rotate(Math.PI);
-    drawPip(ctx, suit, true);
-    ctx.restore();
-  }
-
-  // Size, position, and alpha adjustment for the central icon on 3 and 5
-  if (rank === 3 || rank === 5) {
-    ctx.globalAlpha = 1;
-    ctx.save();
-    ctx.translate(CARD_W / 2, CARD_H / 2);
-    ctx.scale(scale * 1.2, scale * 1.2);
-    drawPip(ctx, suit, true);
+    ctx.translate(0.2 * CARD_W, CARD_H * 0.84);
+    ctx.scale(scale * 1.1, scale * 1.1);
+    if (rank === 1) {
+      drawPip(ctx, suit, true);
+    } else {
+      drawPip(ctx, suit, true, '#ffffff');
+    }
     ctx.restore();
   }
 
   // Size, position, and alpha adjustment for the central icon on stack base
-  if (rank === 0) {
+  if (rank === STACK_BASE_RANK) {
     ctx.globalAlpha = 1;
     ctx.save();
     ctx.translate(CARD_W / 2, CARD_H / 2);
@@ -250,7 +166,7 @@ const drawSuitPips = (
   }
 
   // Unknown rank, so draw large faint suit
-  if (rank === 6) {
+  if (rank === UNKNOWN_CARD_RANK) {
     ctx.save();
     ctx.globalAlpha = colorblindMode ? 0.4 : 0.1;
     ctx.translate(CARD_W / 2, CARD_H / 2);
@@ -324,19 +240,30 @@ const drawCardBase = (
   // Draw the background
   ctx.fillStyle = getSuitStyle(suit, ctx, 'background', colorblindMode);
   ctx.strokeStyle = getSuitStyle(suit, ctx, 'background', colorblindMode);
-  cardBorderPath(ctx, 4);
 
-  // Draw the borders (on visible cards) and the color fill
   ctx.save();
-  ctx.globalAlpha = 0.3;
-  ctx.fill();
-  ctx.globalAlpha = 0.7;
-  ctx.lineWidth = 8;
-  // The borders should be more opaque for the stack base
-  if (rank === 0) {
+  // Draw the borders (on visible cards) and the color fill on stack bases
+  if (rank === STACK_BASE_RANK) {
+    cardBorderPath(ctx, 4);
+    ctx.globalAlpha = 0.3;
+    ctx.fill();
+    ctx.lineWidth = 8;
     ctx.globalAlpha = 1;
+    ctx.stroke();
+  } else if ((rank >= 1 && rank <= 5) || rank === START_CARD_RANK) {
+    // Draw the angled background
+    let percentLeft = (0.17 * (5 - rank)) + 0.27;
+    if (rank === 5) {
+      percentLeft = 0; // Fill the whole card
+    }
+    if (rank === START_CARD_RANK) {
+      anglePath(ctx, 4, 0.5, 0.5);
+    } else {
+      anglePath(ctx, 4, percentLeft, percentLeft - 0.17);
+    }
+    ctx.globalAlpha = 1;
+    ctx.fill();
   }
-  ctx.stroke();
   ctx.restore();
 };
 
@@ -356,6 +283,30 @@ const cardBorderPath = (ctx: CanvasRenderingContext2D, padding: number) => {
   ctx.quadraticCurveTo(0, 0, padding, yRadians + padding);
 };
 
+const anglePath = (
+  ctx: CanvasRenderingContext2D,
+  padding: number,
+  percentLeft: number,
+  percentRight: number,
+) => {
+  const xRadians = CARD_W * 0.08;
+  const yRadians = CARD_W * 0.08;
+  ctx.beginPath();
+  ctx.moveTo(padding, Math.max(percentLeft * CARD_H, yRadians + padding)); // Beginning of angle
+  ctx.lineTo(padding, CARD_H - yRadians - padding); // Bottom-left corner
+  ctx.quadraticCurveTo(0, CARD_H, xRadians + padding, CARD_H - padding);
+  ctx.lineTo(CARD_W - xRadians - padding, CARD_H - padding); // Bottom-right corner
+  ctx.quadraticCurveTo(CARD_W, CARD_H, CARD_W - padding, CARD_H - yRadians - padding);
+  ctx.lineTo(CARD_W - padding, Math.max(percentRight * CARD_H, yRadians + padding)); // End of angle
+  if (percentLeft * CARD_H < yRadians + padding || percentRight * CARD_H < yRadians + padding) {
+    ctx.quadraticCurveTo(CARD_W, 0, CARD_W - xRadians - padding, padding);
+    ctx.lineTo(xRadians + padding, padding); // Top-left corner
+    ctx.quadraticCurveTo(0, 0, padding, yRadians + padding);
+  } else {
+    ctx.lineTo(padding, percentLeft * CARD_H); // Back to beginning
+  }
+};
+
 const drawShape = (ctx: CanvasRenderingContext2D) => {
   ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
   ctx.fill();
@@ -364,10 +315,7 @@ const drawShape = (ctx: CanvasRenderingContext2D) => {
 };
 
 const drawText = (ctx: CanvasRenderingContext2D, textYPos: number, indexLabel: string) => {
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
   ctx.fillText(indexLabel, 19, textYPos);
-  ctx.shadowColor = 'rgba(0, 0, 0, 0)';
-  ctx.strokeText(indexLabel, 19, textYPos);
 };
 
 const drawMixedCardHelper = (ctx: CanvasRenderingContext2D, clueColors: Color[]) => {

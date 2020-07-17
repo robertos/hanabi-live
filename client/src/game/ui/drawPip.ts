@@ -676,11 +676,4 @@ export default function drawPip(
     shapeFunction(ctx);
     ctx.fill();
   }
-
-  // Draw a black border around the shape
-  ctx.lineWidth = hasCustomFill ? 8 : 5;
-  if (shadow === true) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0)';
-  }
-  ctx.stroke();
 }
