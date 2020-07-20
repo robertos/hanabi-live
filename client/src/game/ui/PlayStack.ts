@@ -2,6 +2,7 @@
 // It is composed of LayoutChild objects
 
 import Konva from 'konva';
+import { CARD_W } from '../../constants';
 import * as variantRules from '../rules/variant';
 import { STACK_BASE_RANK } from '../types/constants';
 import globals from './globals';
@@ -36,6 +37,7 @@ export default class PlayStack extends Konva.Group {
       // the "CardLayout" object)
       card.startedTweening();
       animate(layoutChild, {
+        translationSpeed: 1.5 * CARD_W,
         duration: 0.8,
         x: 0,
         y: 0,

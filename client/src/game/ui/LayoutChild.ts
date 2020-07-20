@@ -15,6 +15,8 @@ import isOurTurn from './isOurTurn';
 import PlayStack from './PlayStack';
 import * as turn from './turn';
 
+type DragLocation = 'playArea' | 'discardArea';
+
 export default class LayoutChild extends Konva.Group {
   tween: Konva.Tween | null = null;
   blank: boolean = false;
@@ -159,7 +161,7 @@ export default class LayoutChild extends Konva.Group {
     pos.x += this.width() * this.scaleX() / 2;
     pos.y += this.height() * this.scaleY() / 2;
 
-    let draggedTo = null;
+    let draggedTo: DragLocation | null = null;
     if (globals.elements.playArea!.isOver(pos)) {
       draggedTo = 'playArea';
     } else if (globals.elements.discardArea!.isOver(pos)) {
@@ -198,7 +200,7 @@ export default class LayoutChild extends Konva.Group {
   // Before we play a card,
   // do a check to ensure that it is actually playable to prevent silly mistakes from players
   // (but disable this in speedruns and certain variants)
-  checkMisplay(draggedTo: string | null) {
+  checkMisplay(draggedTo: DragLocation | null) {
     // Local variables
     const state = globals.store!.getState();
     const currentPlayerIndex = state.ongoingGame.turn.currentPlayerIndex;

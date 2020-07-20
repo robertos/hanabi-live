@@ -846,7 +846,7 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
     }
   }
 
-  visualEffectCursor: CursorType = 'default';
+  private visualEffectCursor: CursorType = 'default';
   setVisualEffect(cursor: CursorType) {
     if (cursor === this.visualEffectCursor) {
       return;
@@ -860,12 +860,13 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
       shadowOffsetY: shadowOffset,
       duration: globals.animateFast ? 0 : 0.05,
     });
-    const baseOffsetY = this.isRaisedBecauseOfClues() ? 0.6 * CARD_H : 0.5 * CARD_H;
-    this.to({
-      offsetX: cursor === 'dragging' ? 0.52 * CARD_W : 0.5 * CARD_W,
-      offsetY: baseOffsetY + (cursor === 'dragging' ? 0.02 * CARD_H : 0),
-      duration: globals.animateFast ? 0 : 0.05,
-    });
+    if (cursor === 'dragging') {
+      this.layout.to({
+        x: this.layout.x() - (0.02 * CARD_W),
+        y: this.layout.y() - (0.02 * CARD_H),
+        duration: globals.animateFast ? 0 : 0.05,
+      });
+    }
   }
 
   private registerMouseHandlers() {

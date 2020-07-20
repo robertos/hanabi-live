@@ -2,6 +2,7 @@
 // It is composed of LayoutChild objects
 
 import Konva from 'konva';
+import { CARD_W } from '../../constants';
 import globals from './globals';
 import HanabiCard from './HanabiCard';
 import { animate } from './konvaHelpers';
@@ -132,6 +133,7 @@ export default class CardLayout extends Konva.Group {
 
         const animateToLayout = () => {
           animate(layoutChild, {
+            translationSpeed: 2 * CARD_W,
             duration: 0.5,
             x: newX,
             y: 0,
@@ -159,6 +161,7 @@ export default class CardLayout extends Konva.Group {
           const playStackPos = playStack.getAbsolutePosition();
 
           animate(layoutChild, {
+            translationSpeed: 2 * CARD_W,
             duration: 0.5,
             x: playStackPos.x - pos.x,
             y: playStackPos.y - pos.y,

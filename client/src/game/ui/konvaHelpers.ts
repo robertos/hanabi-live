@@ -15,6 +15,7 @@ interface CanTween {
 
 interface TweenConfig {
   duration?: number;
+  translationSpeed?: number;
   x?: number;
   y?: number;
   scale?: number;
@@ -92,9 +93,25 @@ export const animate = (
     // be there or not if there is a desire to change the value
     // Therefore, disable the linter rule for this block
     /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-    if (params.duration !== undefined) {
+    if (params.translationSpeed !== undefined && params.translationSpeed !== 0) {
+      // Validate parameters
+      if (params.x === undefined && params.y === undefined) {
+        throw new Error('A translation speed was set but this element is not translating.');
+      }
+      // Calculate the duration for the translation speed
+      const deltaX = params.x === undefined ? 0 : params.x - node.x();
+      const deltaY = params.y === undefined ? 0 : params.y - node.y();
+      const distance = Math.sqrt((deltaX ** 2) + (deltaY ** 2));
+      let duration = distance / params.translationSpeed;
+      if (params.duration !== undefined) {
+        // If a duration was provided, treat it as a maximum duration
+        duration = Math.min(params.duration, duration);
+      }
+      config.duration = duration;
+    } else if (params.duration !== undefined) {
       config.duration = params.duration;
     }
+
     if (params.x !== undefined) {
       config.x = params.x;
     }
