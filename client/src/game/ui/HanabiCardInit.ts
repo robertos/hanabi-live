@@ -13,7 +13,6 @@ import {
   CLUED_COLOR,
   CHOP_MOVE_COLOR,
   FINESSE_COLOR,
-  OFF_BLACK,
   FONT_FACE_RANK,
 } from './constants';
 import NoteIndicator from './controls/NoteIndicator';

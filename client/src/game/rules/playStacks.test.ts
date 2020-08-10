@@ -23,7 +23,6 @@ describe('direction', () => {
     const playStackDirection = direction(0, [], [], reversed);
     expect(playStackDirection).toBe(StackDirection.Up);
   });
-
   test('returns Finished for No Variant, 5 cards played', () => {
     const playStackDirection = direction(0, [1, 2, 3, 4, 5], [], noVariant);
     expect(playStackDirection).toBe(StackDirection.Finished);
