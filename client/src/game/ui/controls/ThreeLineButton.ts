@@ -1,7 +1,7 @@
 import Konva from 'konva';
+import { FONT_FACE_UI } from '../constants';
 import Button from './Button';
 import FitText from './FitText';
-import { FONT_FACE_UI } from '../../../constants';
 
 export default class ThreeLineButton extends Button {
   textElement1: Konva.Text;

@@ -2,10 +2,10 @@ import Konva from 'konva';
 import * as variantRules from '../rules/variant';
 import Clue from '../types/Clue';
 import Suit from '../types/Suit';
+import { FONT_FACE_UI } from './constants';
 import drawPip from './drawPip';
 import globals from './globals';
 import { drawLayer } from './konvaHelpers';
-import { FONT_FACE_UI } from '../../constants';
 
 export default class ColorButton extends Konva.Group {
   pressed: boolean = false;

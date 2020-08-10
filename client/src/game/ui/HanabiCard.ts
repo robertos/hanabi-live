@@ -429,7 +429,8 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
         && this.visibleRank !== null
         && this.visibleRank !== STACK_BASE_RANK
       ) {
-        let direction = globals.playStackDirections[this.visibleSuitIndex] ?? StackDirection.Up;
+        const directions = globals.state.visibleState!.playStackDirections;
+        let direction = directions[this.visibleSuitIndex] ?? StackDirection.Up;
         if (direction === StackDirection.Finished) {
           // Use undecided images for finished
           direction = StackDirection.Undecided;

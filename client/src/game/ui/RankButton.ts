@@ -1,6 +1,6 @@
 import Konva from 'konva';
-import { FONT_FACE_RANK, FONT_STYLE_RANK } from '../../constants';
 import Clue from '../types/Clue';
+import { FONT_FACE_RANK, FONT_STYLE_RANK } from './constants';
 import { drawLayer } from './konvaHelpers';
 
 export default class RankButton extends Konva.Group {

@@ -1,7 +1,7 @@
 import Konva from 'konva';
+import { FONT_FACE_UI } from '../constants';
 import { drawLayer } from '../konvaHelpers';
 import FitText from './FitText';
-import { FONT_FACE_UI } from '../../../constants';
 
 export default class Button extends Konva.Group {
   enabled: boolean = true;

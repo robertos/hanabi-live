@@ -4,6 +4,7 @@ import { getSuit } from '../data/gameData';
 import { variantRules } from '../rules';
 import Color from '../types/Color';
 import { STACK_BASE_RANK, START_CARD_RANK, UNKNOWN_CARD_RANK } from '../types/constants';
+import StackDirection from '../types/StackDirection';
 import Suit from '../types/Suit';
 import Variant from '../types/Variant';
 import {
@@ -120,7 +121,9 @@ export default function drawCards(
         drawCard(rank, suit, StackDirection.Up);
         drawCard(rank, suit, StackDirection.Down);
       } else {
-        drawCard(rank, suit, (rank !== STACK_BASE_RANK && suit.reversed) ? StackDirection.Down : StackDirection.Up);
+        const isDirectionDown = rank !== STACK_BASE_RANK && suit.reversed;
+        const direction = isDirectionDown ? StackDirection.Down : StackDirection.Up;
+        drawCard(rank, suit, direction);
       }
     }
   }

@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { FONT_FACE_UI } from '../../constants';
+import { FONT_FACE_UI } from './constants';
 import FitText from './controls/FitText';
 import globals from './globals';
 import MultiFitText from './MultiFitText';

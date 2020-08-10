@@ -1,9 +1,9 @@
 // This is one of the entries in the clue log (in the top-right-hand corner of the UI)
 
 import Konva from 'konva';
-import { FONT_FACE_UI } from '../../constants';
 import { cluesRules } from '../rules';
 import { StateClue } from '../types/GameState';
+import { FONT_FACE_UI } from './constants';
 import FitText from './controls/FitText';
 import globals from './globals';
 import HanabiCard from './HanabiCard';

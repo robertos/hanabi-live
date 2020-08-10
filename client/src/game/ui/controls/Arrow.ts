@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { FONT_FACE_RANK, FONT_STYLE_RANK } from '../../../constants';
+import { FONT_FACE_RANK, FONT_STYLE_RANK } from '../constants';
 
 // These are arrows used to show which cards that are touched by a clue
 // (and for pointing to various things in a shared replay)
