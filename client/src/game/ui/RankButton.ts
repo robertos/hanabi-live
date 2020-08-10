@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { FONT_FACE_RANK } from '../../constants';
+import { FONT_FACE_RANK, FONT_STYLE_RANK } from '../../constants';
 import Clue from '../types/Clue';
 import { drawLayer } from './konvaHelpers';
 
@@ -38,6 +38,7 @@ export default class RankButton extends Konva.Group {
       height: 0.5 * h,
       fontSize: 0.5 * h,
       fontFamily: FONT_FACE_RANK,
+      fontStyle: FONT_STYLE_RANK,
       fill: 'white',
       align: 'center',
       text: (config.number as number).toString(),

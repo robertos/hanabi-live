@@ -50,7 +50,7 @@ export const onPlayStackDirectionsChanged = (
 
     globals.deck
       .filter((c) => c.visibleSuitIndex === i)
-      .forEach((c) => c.setDirectionArrow(i, direction));
+      .forEach((c) => c.setBareImage());
   });
 
   globals.layers.UI.batchDraw();

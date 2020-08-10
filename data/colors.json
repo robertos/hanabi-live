@@ -1,9 +1,9 @@
 {
   "Red": {
-    "fill": "#f94c42"
+    "fill": "#f82f23"
   },
   "Yellow": {
-    "fill": "#f5bd4a"
+    "fill": "#dcd100"
   },
   "Green": {
     "fill": "#00b42d",
@@ -18,7 +18,7 @@
     "fillColorblind": "#8800aa"
   },
   "Teal": {
-    "fill": "#00cccc"
+    "fill": "#00aaaa"
   },
   "Black": {
     "abbreviation": "K",

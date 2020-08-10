@@ -4,7 +4,6 @@ import Konva from 'konva';
 import * as KonvaContext from 'konva/types/Context';
 import { RectConfig } from 'konva/types/shapes/Rect';
 import * as KonvaUtil from 'konva/types/Util';
-import * as variantRules from '../rules/variant';
 import { START_CARD_RANK } from '../types/constants';
 import Variant from '../types/Variant';
 import {
@@ -14,6 +13,7 @@ import {
   CHOP_MOVE_COLOR,
   FINESSE_COLOR,
   FONT_FACE_RANK,
+  FONT_STYLE_RANK,
 } from './constants';
 import NoteIndicator from './controls/NoteIndicator';
 import RankPip from './controls/RankPip';
@@ -52,7 +52,7 @@ export const image = (getBareName: () => string) => {
 const borderCornerRadius = 6;
 const borderStrokeWidth = 30;
 const borderStrokeWidthInside = borderStrokeWidth * 0.6;
-const padding = 10;
+const padding = 14;
 
 const makeBorder = (color: string) => {
   const border = new Konva.Group({
@@ -82,73 +82,6 @@ export const cluedBorder = () => makeBorder(CLUED_COLOR);
 export const chopMoveBorder = () => makeBorder(CHOP_MOVE_COLOR);
 export const finesseBorder = () => makeBorder(FINESSE_COLOR);
 
-export const directionArrow = (variant: Variant) => {
-  if (!variantRules.hasReversedSuits(variant)) {
-    return null;
-  }
-
-  const arrow = new Konva.Group({
-    x: 0.815 * CARD_W,
-    visible: false,
-    offset: {
-      x: 0,
-      y: 0.14 * CARD_H,
-    },
-    listening: false,
-  });
-
-  const arrowHeight = 0.25;
-  const pointerLength = 0.05 * CARD_W;
-
-  const border = new Konva.Arrow({
-    points: [
-      0,
-      0,
-      0,
-      arrowHeight * CARD_H,
-    ],
-    pointerLength,
-    pointerWidth: pointerLength * 1.5,
-    fill: 'black',
-    stroke: 'black',
-    strokeWidth: pointerLength * 2,
-    listening: false,
-  });
-  arrow.add(border);
-
-  const edge = new Konva.Line({
-    points: [
-      0 - pointerLength,
-      0,
-      0 + pointerLength,
-      0,
-    ],
-    fill: 'black',
-    stroke: 'black',
-    strokeWidth: pointerLength * 0.75,
-    listening: false,
-  });
-  arrow.add(edge);
-
-  const arrowBase = new Konva.Arrow({
-    points: [
-      0,
-      0,
-      0,
-      arrowHeight * CARD_H,
-    ],
-    pointerLength,
-    pointerWidth: pointerLength * 1.5,
-    fill: 'white',
-    stroke: 'white', // This should match the color of the suit; it will be manually set later on
-    strokeWidth: pointerLength * 1.25,
-    listening: false,
-  });
-  arrow.add(arrowBase);
-
-  return { arrow, arrowBase };
-};
-
 export const pips = (variant: Variant) => {
   // Initialize the suit pips (colored shapes) on the back of the card,
   // which will be removed one by one as the card gains negative information
@@ -170,8 +103,8 @@ export const pips = (variant: Variant) => {
     const x = Math.floor(CARD_W * 0.5);
     const y = Math.floor(CARD_H * 0.5);
     const scale = { // Scale numbers are magic
-      x: 0.4,
-      y: 0.4,
+      x: 0.35,
+      y: 0.35,
     };
     // Transform polar to Cartesian coordinates
     const offsetBase = CARD_W * 0.7;
@@ -200,7 +133,7 @@ export const pips = (variant: Variant) => {
       shadowOpacity: 0.4,
       shadowForStrokeEnabled: true,
       sceneFunc: (ctx: any) => { // Konva.Context does not exist for some reason
-        drawPip(ctx, suit, false);
+        drawPip(ctx, suit, undefined, '#333333', 3);
       },
       listening: false,
     });
@@ -280,6 +213,7 @@ export const pips = (variant: Variant) => {
       x,
       y,
       fontFamily: FONT_FACE_RANK,
+      fontStyle: FONT_STYLE_RANK,
       fontSize: 63,
       align: 'center',
       text: rank.toString(),
@@ -332,8 +266,8 @@ export const pips = (variant: Variant) => {
 
 export const note = (offsetCornerElements: boolean, shouldShowIndicator: () => boolean) => {
   // Define the note indicator image
-  const noteX = 0.78;
-  const noteY = 0.03;
+  const noteX = 0.68;
+  const noteY = 0.09;
   const size = 0.2 * CARD_W;
   const noteIndicator = new NoteIndicator({
     // If the cards have triangles on the corners that show the color composition,
@@ -366,8 +300,8 @@ export const note = (offsetCornerElements: boolean, shouldShowIndicator: () => b
 
 export const criticalIndicator = (offsetCornerElements: boolean) => {
   // Define the critical indicator image
-  const critX = 0.06;
-  const critY = 0.82;
+  const critX = 0.67;
+  const critY = 0.78;
   const size = 0.2 * CARD_W;
   const indicator = new Konva.Image({
     // If the cards have triangles on the corners that show the color composition,

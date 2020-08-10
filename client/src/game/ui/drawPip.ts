@@ -646,8 +646,9 @@ shapeFunctions.set('rainbow', (ctx: CanvasRenderingContext2D, colors?: string[])
 export default function drawPip(
   ctx: CanvasRenderingContext2D,
   suit: Suit,
-  shadow?: boolean,
   customFill?: string,
+  stroke?: string,
+  strokeWidth?: number,
 ) {
   // Each suit has a shape defined in the "suits.json" file (as the 'pip' property)
   const shapeFunction = shapeFunctions.get(suit.pip);
@@ -655,9 +656,13 @@ export default function drawPip(
     throw new Error(`Failed to find the shape function for pip "${suit.pip}".`);
   }
 
-  // Handle the shadow
-  if (shadow === true) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+  // Draw a border around the shape
+  if (stroke !== undefined) {
+    ctx.save();
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = (strokeWidth ?? 0) * 2;
+    ctx.stroke();
+    ctx.restore();
   }
 
   const hasCustomFill = customFill !== undefined && customFill !== '';

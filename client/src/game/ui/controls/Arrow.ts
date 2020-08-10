@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { FONT_FACE_RANK } from '../../../constants';
+import { FONT_FACE_RANK, FONT_STYLE_RANK } from '../../../constants';
 
 // These are arrows used to show which cards that are touched by a clue
 // (and for pointing to various things in a shared replay)
@@ -112,6 +112,7 @@ export default class Arrow extends Konva.Group {
       height: this.circle.height() * 1.09,
       fontSize: y * 0.38,
       fontFamily: FONT_FACE_RANK,
+      fontStyle: FONT_STYLE_RANK,
       fill: 'white',
       align: 'center',
       verticalAlign: 'middle',

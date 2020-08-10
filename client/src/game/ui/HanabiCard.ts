@@ -135,10 +135,7 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
   private rankPipsXMap: Map<number, Konva.Shape>;
   private trashcan: Konva.Image;
   private wrench: Konva.Image;
-  private criticalIndicator: Konva.Image;
-
-  private arrow: Konva.Group | null = null;
-  private arrowBase: Konva.Arrow | null = null;
+  private criticalIndicator: Konva.Shape;
 
   private _layout: LayoutChild;
   get layout() {
@@ -181,13 +178,6 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
     this.add(this.finesseBorder);
     this.chopMoveBorder = HanabiCardInit.chopMoveBorder();
     this.add(this.chopMoveBorder);
-
-    const arrowElements = HanabiCardInit.directionArrow(this.variant);
-    if (arrowElements) {
-      this.arrow = arrowElements.arrow;
-      this.arrowBase = arrowElements.arrowBase;
-      this.add(this.arrow);
-    }
 
     const pips = HanabiCardInit.pips(this.variant);
     this.suitPipsMap = pips.suitPipsMap;
@@ -390,6 +380,18 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
       && morphedIdentity.suitIndex === null
     );
 
+    if (suitToShow === undefined || suitToShow === unknownSuit || blank) {
+      this._visibleSuitIndex = null;
+    } else {
+      this._visibleSuitIndex = this.variant.suits.indexOf(suitToShow);
+    }
+
+    if (rankToShow === undefined || rankToShow === UNKNOWN_CARD_RANK || blank) {
+      this._visibleRank = null;
+    } else {
+      this._visibleRank = rankToShow;
+    }
+
     // Let the LayoutChild know about it
     this.layout.blank = blank;
 
@@ -421,6 +423,21 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
       this.bareName = DECK_BACK_IMAGE;
     } else {
       this.bareName = `card-${suitToShow!.name}-${rankToShow}`;
+      if (
+        variantRules.hasReversedSuits(this.variant)
+        && this.visibleSuitIndex !== null
+        && this.visibleRank !== null
+        && this.visibleRank !== STACK_BASE_RANK
+      ) {
+        let direction = globals.playStackDirections[this.visibleSuitIndex] ?? StackDirection.Up;
+        if (direction === StackDirection.Finished) {
+          // Use undecided images for finished
+          direction = StackDirection.Undecided;
+        }
+        if (direction !== StackDirection.Up) {
+          this.bareName += `-${direction}`;
+        }
+      }
     }
 
     // Show or hide the pips
@@ -469,17 +486,6 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
       this._visibleRank = rankToShow;
     }
 
-    if (this.arrow !== null && globals.state.visibleState !== null) {
-      if (this.visibleSuitIndex === null || this.visibleRank === STACK_BASE_RANK) {
-        this.arrow.hide();
-      } else {
-        this.setDirectionArrow(
-          this.visibleSuitIndex,
-          globals.state.visibleState.playStackDirections[this.visibleSuitIndex],
-        );
-      }
-    }
-
     this.setStatus();
 
     // Enable/disable shadow on card
@@ -493,57 +499,6 @@ export default class HanabiCard extends Konva.Group implements NodeWithTooltip {
 
     globals.layers.card.batchDraw();
   }
-
-  // Show or hide the direction arrow (for specific variants)
-  setDirectionArrow(suitIndex: number, direction: StackDirection) {
-    if (!variantRules.hasReversedSuits(this.variant)) {
-      return;
-    }
-
-    const suit = this.variant.suits[suitIndex];
-
-    let shouldShowArrow;
-    if (variantRules.isUpOrDown(this.variant)) {
-      // In "Up or Down" variants, the arrow should be shown when the stack direction is determined
-      // (and the arrow should be cleared when the stack is finished)
-      shouldShowArrow = (
-        direction === StackDirection.Up
-        || direction === StackDirection.Down
-      );
-    } else if (suit.reversed) {
-      // In variants with a reversed suit, the arrow should always be shown on the reversed suit
-      shouldShowArrow = true;
-    } else {
-      shouldShowArrow = false;
-    }
-
-    this.arrow!.visible(shouldShowArrow);
-    if (!shouldShowArrow) {
-      return;
-    }
-
-    this.arrow!.rotation(direction === StackDirection.Up ? 180 : 0);
-    this.arrowBase!.stroke(suit.fill);
-    if (suit.fill === 'multi') {
-      // We can't use a fill gradient because the "fill" is actually a big stroke
-      // (the Konva arrow object is not a shape, but instead a very thick line)
-      // Instead, just use the the first gradient color
-      this.arrowBase!.stroke(suit.fillColors[0]);
-    }
-    if (this.rankPips!.isVisible()) {
-      this.setArrowMiddleRight();
-    } else {
-      this.setArrowBottomRight();
-    }
-  }
-
-  private setArrowMiddleRight = () => {
-    this.arrow!.y(0.5 * CARD_H);
-  };
-
-  private setArrowBottomRight = () => {
-    this.arrow!.y(0.79 * CARD_H);
-  };
 
   setStatus() {
     const visibleState = globals.state.visibleState;

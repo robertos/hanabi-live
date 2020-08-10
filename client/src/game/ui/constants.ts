@@ -22,6 +22,7 @@ export const OFF_BLACK = '#0d0d0d';
 // Fonts
 export const FONT_FACE_UI = 'Verdana';
 export const FONT_FACE_RANK = 'Epilogue';
+export const FONT_STYLE_RANK = '600';
 
 // Time constants
 export const TOOLTIP_DELAY = 500; // In milliseconds
