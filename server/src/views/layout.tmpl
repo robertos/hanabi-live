@@ -26,8 +26,8 @@
   {{end}}
   <!-- Preload fonts -->
   <link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="/public/webfonts/fa-solid-900.woff2" />
-  <link rel="preload" as="style" type="text/css" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&display=swap" />
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&display=swap" />
+  <link rel="preload" as="style" type="text/css" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Open+Sans:wght@400;700&display=swap" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Open+Sans:wght@400;700&display=swap" />
   {{if eq .Title "Dev"}}
     <!-- These should match the CSS array in "Gruntfile.js" -->
     <link rel="stylesheet" type="text/css" href="/public/css/lib/fontawesome.min.css" />
@@ -47,8 +47,9 @@
 
 <body>
   {{template "content" .}}
-  <!-- Ensure the font is actually loaded -->
+  <!-- Ensure the fonts are actually loaded -->
   <div style="font-family: Epilogue;">.</div>
+  <div style="font-family: 'Open Sans';">.</div>
 </body>
 
 </html>
