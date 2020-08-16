@@ -12,6 +12,7 @@ import {
   CLUED_COLOR,
   CHOP_MOVE_COLOR,
   FINESSE_COLOR,
+  OFF_BLACK,
   FONT_FACE_RANK,
   FONT_STYLE_RANK,
 } from './constants';
@@ -50,9 +51,10 @@ export const image = (getBareName: () => string) => {
 };
 
 const borderCornerRadius = 6;
-const borderStrokeWidth = 30;
+const borderStrokeWidth = 20;
 const borderStrokeWidthInside = borderStrokeWidth * 0.6;
-const padding = 14;
+const borderOffset = 2;
+const borderOutsideColor = OFF_BLACK;
 
 const makeBorder = (color: string) => {
   const border = new Konva.Group({
@@ -61,18 +63,18 @@ const makeBorder = (color: string) => {
   });
 
   const borderConfig = (strokeWidth: number, stroke: string): RectConfig => ({
-    x: padding,
-    y: padding,
-    width: CARD_W - (2 * padding),
-    height: CARD_H - (2 * padding),
+    width: CARD_W - borderOffset,
+    height: CARD_H - borderOffset,
     cornerRadius: borderCornerRadius,
     strokeWidth,
     stroke,
     listening: false,
   });
 
+  const borderOutside = new Konva.Rect(borderConfig(borderStrokeWidth, borderOutsideColor));
   const borderInside = new Konva.Rect(borderConfig(borderStrokeWidthInside, color));
 
+  border.add(borderOutside);
   border.add(borderInside);
 
   return border;
